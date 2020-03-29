@@ -1,0 +1,10 @@
+.git
+.venv
+.pylintrc
+.vscode
+TODO
+.scrapy/
+.tweepy/
+.semaphore/
+data/
+.env*

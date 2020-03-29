@@ -1,0 +1,15 @@
+.venv
+.env*
+.ropeproject
+.ipynb_checkpoints/
+.scrapy/
+__pycache__
+*.pyc
+data/
+.tweepy/
+*.egg-info
+TODO
+staticfiles/
+*.log
+COVID-19 Stats.ipynb
+*.sqlite3
