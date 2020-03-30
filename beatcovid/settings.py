@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 from pprint import pprint
 
 import environ
@@ -53,11 +54,13 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # local
     # third party
-    "django_extensions",
+    # "django_extensions",
     "huey.contrib.djhuey",
     "rest_framework",
     "corsheaders",
     "storages",
+    "bootstrapform",
+    "survey",
 ]
 
 MIDDLEWARE = [
@@ -72,6 +75,10 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "beatcovid.urls"
+
+
+CSV_DIRECTORY = Path("csv")
+TEX_DIRECTORY = Path("tex")
 
 TEMPLATES = [
     {
