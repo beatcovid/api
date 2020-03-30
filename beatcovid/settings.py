@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # local
+    "beatcovid.api",
     # third party
     # "django_extensions",
     "huey.contrib.djhuey",
@@ -75,7 +76,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "beatcovid.urls"
-
 
 CSV_DIRECTORY = Path("csv")
 TEX_DIRECTORY = Path("tex")
