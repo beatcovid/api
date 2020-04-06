@@ -34,13 +34,23 @@ if SENTRY_DSN and (DEBUG == False):
     )
 
 
-ALLOWED_HOSTS = ["beatcovid19now.org", "127.0.0.10", "127.0.0.1", "localhost"]
+ALLOWED_HOSTS = [
+    "api.stopcovid.infotorch.org",
+    "api.beatcovid19now.org",
+    "api.staging.beatcovid19now.org",
+    "beatcovid19now.org",
+    "127.0.0.10",
+    "127.0.0.1",
+    "localhost",
+]
 
 ALLOWED_CLIENT_HOSTS = ALLOWED_HOSTS
 
 CORS_ORIGIN_REGEX_WHITELIST = [
     r"https?://127\.0\.0\.\d+(:?\:\d{4})?",
     r"https://beatcovid19now.org",
+    r"https://beatcovid.infotorch.org",
+    r"https://staging.beatcovid19now.org",
 ]
 
 # Application definition
