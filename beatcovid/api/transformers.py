@@ -103,6 +103,9 @@ def parse_kobo_json(form_json):
             if "calculation" in si:
                 q["calculation"] = si["calculation"]
 
+            if "parameters" in si:
+                q["parameters"] = si["parameters"]
+
             if "appearance" in si:
                 q["appearance"] = si["appearance"]
 
