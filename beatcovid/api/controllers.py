@@ -91,7 +91,7 @@ def get_form_schema(form_name):
     try:
         return_schema = parse_kobo_json(r)
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         return None
 
     return return_schema
