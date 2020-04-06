@@ -1,5 +1,29 @@
 import json
 
+import markdown
+
+
+def _strip_outer_tags(s):
+    """ strips outer html tags """
+
+    start = s.find(">") + 1
+    end = len(s) - s[::-1].find("<") - 1
+
+    return s[start:end]
+
+
+def parse_form_label(label):
+    if type(label) is not list:
+        label = [label]
+
+    _output = "".join(label).replace("\n", "")
+
+    _output = markdown.markdown(_output)
+
+    _output = _strip_outer_tags(_output)
+
+    return _output
+
 
 def parse_kobo_json(form_json):
     """
@@ -40,7 +64,7 @@ def parse_kobo_json(form_json):
         if si["type"] == "begin_group":
             step = {"name": si["name"], "questions": []}
             if "label" in si:
-                step["label"] = "".join(si["label"]).replace("\n", "")
+                step["label"] = parse_form_label(si["label"])
             # q = {}
             in_step = True
         elif si["type"] == "end_group":
@@ -51,7 +75,7 @@ def parse_kobo_json(form_json):
             q = {"id": si["$kuid"], "name": si["name"], "type": si["type"]}
 
             if "label" in si:
-                q["label"] = "".join(si["label"])
+                q["label"] = parse_form_label(si["label"])
 
             if "appearance" in si:
                 q["appearance"] = si["appearance"]
@@ -92,7 +116,7 @@ def parse_kobo_json(form_json):
                     {
                         "id": si["name"],
                         "value": i["name"],
-                        "label": "".join(i["label"]).replace("\n", ""),
+                        "label": parse_form_label(i["label"]),
                     }
                     for i in c
                 ]
