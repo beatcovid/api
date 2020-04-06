@@ -76,6 +76,12 @@ def parse_kobo_json(form_json):
             if "constraint_message" in si:
                 q["constraint_message"] = si["constraint_message"]
 
+            if "calculation" in si:
+                q["calculation"] = si["calculation"]
+
+            if "appearance" in si:
+                q["appearance"] = si["appearance"]
+
             if "select_from_list_name" in si:
                 c = list(
                     filter(
@@ -100,8 +106,8 @@ def parse_kobo_json(form_json):
                 "type": si["type"],
             }
 
-            # if si["type"] == "calculate":
-            # _global["calculate"] = si["calculate"]
+            if si["type"] == "calculate":
+                _global["calculation"] = si["calculation"]
 
             _globals.append(_global)
 
