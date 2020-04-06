@@ -60,8 +60,6 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     "storages",
-    "bootstrapform",
-    "survey",
 ]
 
 MIDDLEWARE = [
@@ -98,6 +96,14 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "beatcovid.wsgi.application"
+
+# Kobo setup
+KOBO_FORM_SERVER = env(
+    "KOBO_FORM_SERVER", default="https://kobo.stopcovid.infotorch.org/"
+)
+KOBO_FORM_TOKEN = env(
+    "KOBO_FORM_TOKEN", default="867efc167553ff10d9a80beb988dfed9a282d07f"
+)
 
 DATABASES_AVAILABLE = {
     "production": env.db(),
@@ -138,17 +144,30 @@ LOGGING = {
     "disable_existing_loggers": False,
     "handlers": {
         "file": {
-            "level": "DEBUG",
+            "level": "INFO",
             "class": "logging.FileHandler",
-            "filename": "debug.log",
+            "filename": "error.log",
         },
-        "console": {"class": "logging.StreamHandler", "level": "INFO"},
+        "console": {"class": "logging.StreamHandler", "level": "DEBUG"},
     },
     "loggers": {
-        "django": {"handlers": ["console"], "level": "DEBUG", "propagate": True},
-        "beatcovid": {"handlers": ["console"], "level": "DEBUG", "propagate": True},
+        "django": {"handlers": ["file"], "level": "INFO", "propagate": True},
+        "django.utils.autoreload": {"level": "INFO",},
+        "beatcovid": {"handlers": ["file"], "level": "INFO", "propagate": True},
     },
 }
+
+if DEBUG:
+    LOGGING["loggers"]["django"] = {
+        "handlers": ["console"],
+        "level": "DEBUG",
+        "propagate": True,
+    }
+    LOGGING["loggers"]["beatcovid"] = {
+        "handlers": ["console"],
+        "level": "DEBUG",
+        "propagate": True,
+    }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
