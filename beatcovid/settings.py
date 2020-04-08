@@ -1,10 +1,12 @@
+import logging
 import os
-from pathlib import Path
-from pprint import pprint
 
 import environ
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
+
+logger = logging.getLogger("beatcovid.settings")
+logger.setLevel(logging.INFO)
 
 env = environ.Env(DEBUG=(bool, False), USE_S3=(bool, False))
 
@@ -24,15 +26,15 @@ SECRET_KEY = env("SECRET_KEY")
 SENTRY_DSN = env("SENTRY_DSN")
 
 if SENTRY_DSN and (DEBUG == False):
+    logger.info("Setting sentry to {}".format(SENTRY_DSN))
     sentry_sdk.init(
         dsn=SENTRY_DSN,
         integrations=[DjangoIntegration()],
-        # If you wish to associate users to errors (assuming you are using
-        # django.contrib.auth) you may enable sending PII data.
         environment=ENV,
         send_default_pii=True,
     )
-
+else:
+    logger.warn("Sentry has not been set")
 
 ALLOWED_HOSTS = [
     "api.stopcovid.infotorch.org",
@@ -64,6 +66,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # local
     "beatcovid.api",
+    "beatcovid.respondent",
     # third party
     # "django_extensions",
     "huey.contrib.djhuey",
@@ -84,9 +87,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "beatcovid.urls"
-
-CSV_DIRECTORY = Path("csv")
-TEX_DIRECTORY = Path("tex")
 
 TEMPLATES = [
     {
@@ -111,9 +111,30 @@ WSGI_APPLICATION = "beatcovid.wsgi.application"
 KOBO_FORM_SERVER = env(
     "KOBO_FORM_SERVER", default="https://kobo.stopcovid.infotorch.org/"
 )
+
+# @TODO replace with restricted permission tokens
 KOBO_FORM_TOKEN = env(
     "KOBO_FORM_TOKEN", default="867efc167553ff10d9a80beb988dfed9a282d07f"
 )
+
+KOBOCAT_API = env("KOBOCAT_API", default="https://kc.stopcovid.infotorch.org/")
+
+# @TODO replace with restricted permission tokens
+KOBOCAT_CREDENTIALS = env(
+    "KOBOCAT_CREDENTIALS", default="c3VwZXJfYWRtaW46WkxOJEM3WTh6WA=="
+)
+
+
+# auth methods
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+        # @TODO we'll proably need this
+        # "rest_framework.authtoken",
+    ]
+}
+
 
 DATABASES_AVAILABLE = {
     "production": env.db(),
@@ -138,6 +159,7 @@ if DB_USING not in DATABASES_AVAILABLE.keys():
 
 DATABASES = {"default": DATABASES_AVAILABLE[DB_USING]}
 
+logger.info("Using database {}".format(DB_USING))
 
 COUNTRIES_FIRST = ["AU", "NZ"]
 # redis
@@ -167,7 +189,8 @@ LOGGING = {
     },
 }
 
-if DEBUG:
+if DEBUG == True:
+    logging.info("Setting debug loggers")
     LOGGING["loggers"]["django"] = {
         "handlers": ["console"],
         "level": "DEBUG",
@@ -199,25 +222,20 @@ DEFAULT_FROM_EMAIL = env(
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/3.0/topics/i18n/
-
 LANGUAGE_CODE = "en-au"
-
 TIME_ZONE = "UTC"
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.0/howto/static-files/
-
 USE_S3 = os.getenv("USE_S3", default=False)
 
 if USE_S3:
+    logger.info(
+        "Setting up S3 for static hosting with bucket {}".format(AWS_STORAGE_BUCKET_NAME)
+    )
     # aws settings
     AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
     AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
@@ -230,6 +248,7 @@ if USE_S3:
     STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
     STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 else:
+    logger.info("Using local static files")
     STATIC_URL = "/staticfiles/"
     STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
