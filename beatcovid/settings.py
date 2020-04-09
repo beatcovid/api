@@ -25,6 +25,8 @@ DEBUG = env("DEBUG", default=True)
 SECRET_KEY = env("SECRET_KEY")
 SENTRY_DSN = env("SENTRY_DSN")
 
+logger.info("DEBUG is set to {}".format(DEBUG))
+
 if SENTRY_DSN and (DEBUG == False):
     logger.info("Setting sentry to {}".format(SENTRY_DSN))
     sentry_sdk.init(

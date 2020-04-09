@@ -18,16 +18,23 @@ from .controllers import (
     submit_form,
 )
 
+logger = logging.getLogger(__name__)
+
 # valid KOBO form names
 _clean_form_name = re.compile("[^a-zA-Z\-\_0-9]")
 
 
 @api_view(["POST"])
-@permission_classes([IsAuthenticated])
-def FormSubmission(request, form_id, submission):
-    result = submit_form(form_id, submission)
+# @permission_classes([IsAuthenticated])
+def FormSubmission(request, form_name):
+    submission = request.POST.get("submission")
+
+    result = submit_form(form_name, submission)
+
+    print(result)
 
     if not result:
+        print("404")
         raise Http404
 
     return Response(result)
@@ -59,10 +66,10 @@ def FormStats(request, form_name):
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsAdminUser])
-def FormData(request, form_id, query=None):
+def FormData(request, form_name, query=None):
     form_name = _clean_form_name.sub("", form_name)
 
-    result = get_submission_data(form_id, query)
+    result = get_submission_data(form_name, query)
 
     if not result:
         raise Http404
