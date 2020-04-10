@@ -1,3 +1,4 @@
+import html
 import json
 
 import markdown
@@ -17,6 +18,8 @@ def parse_form_label(label):
         label = [label]
 
     _output = "".join(label).replace("\n", "")
+
+    _output = html.unescape(_output)
 
     _output = markdown.markdown(_output)
 
