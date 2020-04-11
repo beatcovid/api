@@ -29,4 +29,3 @@ EXPOSE 8000
 WORKDIR /code
 
 ENTRYPOINT [ "./docker-entrypoint.sh" ]
-CMD [""]
