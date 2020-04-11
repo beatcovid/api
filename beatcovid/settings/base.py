@@ -1,27 +1,24 @@
 import logging
 import os
 
-import environ
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
+
+from .environ import env, load_environment
 
 logger = logging.getLogger("beatcovid.settings")
 logger.setLevel(logging.INFO)
 
-env = environ.Env(DEBUG=(bool, False), USE_S3=(bool, False))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-ENV = env.str("ENV", "development")
+ENV = env("ENV", default="development")
+DEBUG = env("DEBUG", default=True)
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-ENV_FILE = f".env.{ENV}"
-ENV_PATH = os.path.join(BASE_DIR, ENV_FILE)
-if os.path.isfile(ENV_PATH):
-    env.read_env(ENV_PATH)
-    # environ.Env.read_env(env_file=)
+load_environment(os.path.join(BASE_DIR, f".env.{ENV}"))
 
 # False if not in os.environ
 DEBUG = env("DEBUG", default=True)
+
 SECRET_KEY = env("SECRET_KEY")
 SENTRY_DSN = env("SENTRY_DSN")
 
@@ -152,7 +149,6 @@ if COOKIE_DOMAIN != None:
 SESSION_COOKIE_NAME = "uid"
 
 # should set this in prod
-# SESSION_COOKIE_SECURE = True
 
 DATABASES_AVAILABLE = {
     "production": env.db(),
@@ -184,8 +180,7 @@ COUNTRIES_FIRST = ["AU", "NZ"]
 REDIS_HOST = env("REDIS_HOST", default="127.0.0.6")
 REDIS_URL = env("REDIS_URL", default="redis://127.0.0.6:6379/")
 
-
-from .scheduler import scheduler  # isort:skip pylint: disable=wrong-import-position
+from ..scheduler import scheduler  # isort:skip pylint: disable=wrong-import-position
 
 HUEY = scheduler
 
