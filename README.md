@@ -21,3 +21,4 @@ Load languages fixture
 $ python manage.py loaddata languages_data.json.gz
 ```
 
+ 
