@@ -147,7 +147,7 @@ SESSION_COOKIE_AGE = 60 * 60 * 24 * 365 * 5  # 5 years
 # this dumb two-step is because setting the env as "None" doesn't cast as Python None
 COOKIE_DOMAIN = env("COOKIE_DOMAIN", default=None)
 if COOKIE_DOMAIN != None:
-    SESSION_COOKIE_DOMAIN = COOKIE_DOMAIN
+    SESSION_COOKIE_DOMAIN = COOKIE_DOMAIN.strip('"')
 
 SESSION_COOKIE_NAME = "uid"
 
