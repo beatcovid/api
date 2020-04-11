@@ -1,7 +1,10 @@
 import html
 import json
+import logging
 
 import markdown
+
+logger = logging.getLogger(__name__)
 
 
 def _strip_outer_tags(s):
@@ -69,7 +72,13 @@ def _parse_question(si, choices):
     if "appearance" in si:
         q["appearance"] = si["appearance"]
 
-    if "select_from_list_name" in si:
+    # load externs
+    if "extern" in si and (si["extern"] == True or si["extern"].lower() == "true"):
+        logger.debug("extern", si["select_from_list_name"])
+        q["choices"] = load_externs(si["select_from_list_name"])
+
+    # only load choices if it's not an extern
+    elif "select_from_list_name" in si:
         c = list(filter(lambda d: d["list_name"] == si["select_from_list_name"], choices))
         c = [
             {"id": si["name"], "value": i["name"], "label": parse_form_label(i["label"]),}
@@ -78,6 +87,18 @@ def _parse_question(si, choices):
         q["choices"] = c
 
     return q
+
+
+def load_externs(list_name):
+    if list_name == "languages":
+        from languages_plus.models import Language
+
+        languages = []
+        for l in Language.objects.all():
+            languages.append(
+                {"id": "languages", "value": l.iso_639_1, "label": l.name_en}
+            )
+        return languages
 
 
 def parse_kobo_json(form_json):

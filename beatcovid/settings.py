@@ -70,6 +70,8 @@ INSTALLED_APPS = [
     "beatcovid.api",
     "beatcovid.respondent",
     # third party
+    "countries_plus",
+    "languages_plus",
     # "django_extensions",
     "huey.contrib.djhuey",
     "rest_framework",
