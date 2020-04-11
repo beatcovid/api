@@ -3,6 +3,7 @@ import json
 import logging
 
 import markdown
+from django.utils.translation import get_language_from_request
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +32,7 @@ def parse_form_label(label):
     return _output
 
 
-def _parse_question(si, choices):
+def _parse_question(si, choices, request):
     q = {"id": si["$kuid"], "type": si["type"]}
 
     if "name" in si:
@@ -74,8 +75,7 @@ def _parse_question(si, choices):
 
     # load externs
     if "extern" in si and (si["extern"] == True or si["extern"].lower() == "true"):
-        logger.debug("extern", si["select_from_list_name"])
-        q["choices"] = load_externs(si["select_from_list_name"])
+        q["choices"] = load_externs(si["select_from_list_name"], request)
 
     # only load choices if it's not an extern
     elif "select_from_list_name" in si:
@@ -89,19 +89,41 @@ def _parse_question(si, choices):
     return q
 
 
-def load_externs(list_name):
+def language_from_locale(locale):
+    if "-" in locale:
+        language, country = locale.split("-")
+    else:
+        language = locale
+        country = None
+    return language, country
+
+
+def load_externs(list_name, request):
     if list_name == "languages":
         from languages_plus.models import Language
 
         languages = []
+        user_locale = get_language_from_request(request)
+
+        user_language, user_country = language_from_locale(user_locale)
+
+        logger.debug("{}".format(user_language))
+
+        languages_top = []
         for l in Language.objects.all():
-            languages.append(
-                {"id": "languages", "value": l.iso_639_1, "label": l.name_en}
-            )
-        return languages
+            if l.iso_639_1 == user_language:
+                languages_top.append(
+                    {"id": "languages", "value": l.iso_639_1, "label": l.name_en}
+                )
+            else:
+                languages.append(
+                    {"id": "languages", "value": l.iso_639_1, "label": l.name_en}
+                )
+
+        return languages_top + languages
 
 
-def parse_kobo_json(form_json):
+def parse_kobo_json(form_json, request):
     """
         Takes JSON form output from KOBO and translates it into
         something more useful we can use in our clients. preference
@@ -147,10 +169,10 @@ def parse_kobo_json(form_json):
             steps.append(step)
             in_step = False
         elif in_step:
-            q = _parse_question(si, choices)
+            q = _parse_question(si, choices, request)
             step["questions"].append(q)
         else:
-            _global = _parse_question(si, choices)
+            _global = _parse_question(si, choices, request)
 
             _globals.append(_global)
 

@@ -44,7 +44,8 @@ def FormSubmission(request, form_name):
 def FormSchema(request, form_name):
     form_name = _clean_form_name.sub("", form_name)
 
-    result = get_form_schema(form_name)
+    # @TODO avoid prop drilling request down
+    result = get_form_schema(form_name, request)
 
     if not result:
         raise Http404

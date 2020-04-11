@@ -85,7 +85,7 @@ def get_form_id_from_name(form_name):
     return form["uid"]
 
 
-def get_form_schema(form_name):
+def get_form_schema(form_name, request=None):
     """
         Get the form schema from kobo cat
 
@@ -124,7 +124,7 @@ def get_form_schema(form_name):
     return_schema = None
 
     try:
-        return_schema = parse_kobo_json(r)
+        return_schema = parse_kobo_json(r, request)
     except Exception as e:
         logging.exception(e)
         return None
