@@ -132,7 +132,7 @@ def get_form_schema(form_name, request=None):
     return return_schema
 
 
-def submit_form(form_name, form_data):
+def submit_form(form_name, form_data, user_id):
     """
         Submit a form to Kobo via Kobocat
 
@@ -160,11 +160,13 @@ def submit_form(form_name, form_data):
 
     f = None
 
-    logger.debug(form_data)
-
     submission_parcel = {
         "id": formid,
-        "submission": {"transport": form_data, "meta": {"instanceID": f"uuid:{_uuid}"},},
+        "submission": {
+            "transport": form_data,
+            "meta": {"instanceID": f"uuid:{_uuid}"},
+            "user_id": user_id,
+        },
     }
 
     try:

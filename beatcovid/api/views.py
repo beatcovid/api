@@ -2,6 +2,7 @@ import datetime
 import json
 import logging
 import re
+import uuid
 
 from django.db.models import Avg, Count, F
 from django.http import Http404, HttpResponseBadRequest
@@ -11,6 +12,8 @@ from rest_framework import generics, permissions, status, viewsets
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
+
+from beatcovid.respondent.controllers import get_user_from_request
 
 from .controllers import (
     get_form_schema,
@@ -28,14 +31,19 @@ _clean_form_name = re.compile("[^a-zA-Z\-\_0-9]")
 @api_view(["POST"])
 # @permission_classes([IsAuthenticated])
 def FormSubmission(request, form_name):
+    user = get_user_from_request(request)
+
     try:
         submission = json.loads(request.body)  # request.raw_post_data w/ Django < 1.4
     except KeyError:
-        HttpResponseBadRequest("Malformed data")
+        raise HttpResponseBadRequest("Malformed data")
 
-    result = submit_form(form_name, submission)
+    if "user_id" in submission:
+        submitted_user = submission["user_id"]
+        if submitted_user != user.id:
+            raise HttpResponseBadRequest("User mismatch")
 
-    print(result)
+    result = submit_form(form_name, submission, str(user.id))
 
     if not result:
         print("404")
@@ -46,6 +54,7 @@ def FormSubmission(request, form_name):
 
 @api_view(["GET"])
 def FormSchema(request, form_name):
+    user = get_user_from_request(request)
     form_name = _clean_form_name.sub("", form_name)
 
     # @TODO avoid prop drilling request down

@@ -18,14 +18,14 @@ def get_user_from_request(request):
     s = None
 
     if user_id:
-        user_id = uuid.UUID(hex=user_id)
+        user_id = uuid.UUID(user_id)
         u = Respondent.objects.get(id=user_id)
         logger.debug(f"Retrieved user {u.id}")
 
     if not u:
         u = Respondent()
         u.save()
-        request.session["user"] = user.id.hex
+        request.session["user"] = str(user.id)
         logger.debug(f"Created new user {u.id}")
 
     if session_key:
