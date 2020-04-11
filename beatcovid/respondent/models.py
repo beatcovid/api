@@ -22,6 +22,8 @@ class Session(models.Model):
     respondent = models.ForeignKey(
         Respondent, on_delete=models.DO_NOTHING, related_name="sessions"
     )
+    # @TODO refactor this into a choices and value field so it can be grown by ID type
+    # add expiry to each type
     cookie_id = models.CharField(
         max_length=256, verbose_name="User cookie ID", db_index=True, blank=True
     )

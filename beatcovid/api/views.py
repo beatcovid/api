@@ -57,8 +57,9 @@ def FormSchema(request, form_name):
     user = get_user_from_request(request)
     form_name = _clean_form_name.sub("", form_name)
 
+    logger.debug("GOT USER ===== %s", user.id)
     # @TODO avoid prop drilling request down
-    result = get_form_schema(form_name, request)
+    result = get_form_schema(form_name, request, user)
 
     if not result:
         raise Http404

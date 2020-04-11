@@ -121,7 +121,7 @@ def load_externs(list_name, request):
         return languages_top + languages
 
 
-def parse_kobo_json(form_json, request):
+def parse_kobo_json(form_json, request, user):
     """
         Takes JSON form output from KOBO and translates it into
         something more useful we can use in our clients. preference
@@ -140,6 +140,13 @@ def parse_kobo_json(form_json, request):
         "uid": _json["uid"],
         "name": _json["name"],
         "url": _json["url"],
+        "user": {
+            "id": str(user.id),
+            "submission": user.submissions,
+            "last_submission": user.last_submission,
+            "last_login": user.last_login,
+            "first_login": user.created_at,
+        },
         "date_created": _json["date_created"],
         "summary": _json["summary"],
         "date_modified": _json["date_modified"],
@@ -147,7 +154,6 @@ def parse_kobo_json(form_json, request):
         "has_deployment": _json["has_deployment"],
         "deployed_versions": _json["deployed_versions"],
         "translations": _json["content"]["translations"],
-        "user": {},
     }
 
     steps = []
