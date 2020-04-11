@@ -139,6 +139,20 @@ REST_FRAMEWORK = {
     ]
 }
 
+# session cookie settings
+SESSION_SAVE_EVERY_REQUEST = False
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 365 * 5  # 5 years
+
+# this dumb two-step is because setting the env as "None" doesn't cast as Python None
+COOKIE_DOMAIN = env("COOKIE_DOMAIN", default=None)
+if COOKIE_DOMAIN != None:
+    SESSION_COOKIE_DOMAIN = COOKIE_DOMAIN
+
+SESSION_COOKIE_NAME = "uid"
+
+# should set this in prod
+# SESSION_COOKIE_SECURE = True
 
 DATABASES_AVAILABLE = {
     "production": env.db(),
@@ -201,6 +215,11 @@ if DEBUG == True:
         "propagate": True,
     }
     LOGGING["loggers"]["beatcovid"] = {
+        "handlers": ["console"],
+        "level": "DEBUG",
+        "propagate": True,
+    }
+    LOGGING["loggers"]["requests.packages.urllib3"] = {
         "handlers": ["console"],
         "level": "DEBUG",
         "propagate": True,

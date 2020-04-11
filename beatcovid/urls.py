@@ -16,7 +16,6 @@ urlpatterns = [
     path("api/form/stats/<str:form_name>/", FormStats),
     path("api/form/submit/<str:form_name>/", FormSubmission),
     path("api/form/data/<str:form_name>/", FormData),
-    path("user", UserDetailView.as_view()),
-    # path("auth/", include("rest_framework.urls", namespace="rest_framework")),
+    path("api/user/", UserDetailView),
     path("admin/", admin.site.urls),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
