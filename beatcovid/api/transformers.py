@@ -103,13 +103,11 @@ def load_externs(list_name, request):
         from languages_plus.models import Language
 
         languages = []
-        user_locale = get_language_from_request(request)
+        languages_top = []
 
+        user_locale = get_language_from_request(request)
         user_language, user_country = language_from_locale(user_locale)
 
-        logger.debug("{}".format(user_language))
-
-        languages_top = []
         for l in Language.objects.all():
             if l.iso_639_1 == user_language:
                 languages_top.append(
