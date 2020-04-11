@@ -159,6 +159,9 @@ def submit_form(form_name, form_data):
     _uuid = uuid.uuid4()
 
     f = None
+
+    logger.debug(form_data)
+
     submission_parcel = {
         "id": formid,
         "submission": {"transport": form_data, "meta": {"instanceID": f"uuid:{_uuid}"},},

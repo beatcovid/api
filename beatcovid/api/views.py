@@ -1,9 +1,10 @@
 import datetime
+import json
 import logging
 import re
 
 from django.db.models import Avg, Count, F
-from django.http import Http404
+from django.http import Http404, HttpResponseBadRequest
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from rest_framework import generics, permissions, status, viewsets
@@ -27,7 +28,10 @@ _clean_form_name = re.compile("[^a-zA-Z\-\_0-9]")
 @api_view(["POST"])
 # @permission_classes([IsAuthenticated])
 def FormSubmission(request, form_name):
-    submission = request.POST.get("submission")
+    try:
+        submission = json.loads(request.body)  # request.raw_post_data w/ Django < 1.4
+    except KeyError:
+        HttpResponseBadRequest("Malformed data")
 
     result = submit_form(form_name, submission)
 
