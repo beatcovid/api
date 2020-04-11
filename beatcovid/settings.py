@@ -152,7 +152,7 @@ DATABASES_AVAILABLE = {
     },
 }
 
-DB_USING = os.environ.get("DJANGO_DATABASE", "development")
+DB_USING = os.environ.get("DJANGO_DATABASE", ENV)
 
 if DB_USING not in DATABASES_AVAILABLE.keys():
     raise Exception(
