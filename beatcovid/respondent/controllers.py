@@ -25,7 +25,7 @@ def get_user_from_request(request):
     if not u:
         u = Respondent()
         u.save()
-        request.session["user"] = str(user.id)
+        request.session["user"] = str(u.id)
         logger.debug(f"Created new user {u.id}")
 
     if session_key:
