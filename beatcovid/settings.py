@@ -219,6 +219,11 @@ if DEBUG == True:
         "level": "DEBUG",
         "propagate": True,
     }
+    LOGGING["loggers"]["requests.packages.urllib3"] = {
+        "handlers": ["console"],
+        "level": "DEBUG",
+        "propagate": True,
+    }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [

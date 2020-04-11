@@ -1,3 +1,4 @@
+import json
 import logging
 import uuid
 
@@ -85,9 +86,69 @@ def get_form_id_from_name(form_name):
     return form["uid"]
 
 
+def get_form_pk_from_name(form_name):
+    """
+        Get the kobocat form pk from a form name.
+
+        @param formid - kpi form id
+
+    """
+    # @TODO switch this to using kpi rather than kobocat
+
+    form_id = get_form_id_from_name(form_name)
+
+    if not form_id:
+        logger.info(f"get_form_id_from_name got no form id for form: {form_name}")
+        return None
+
+    _formserver = get_kobocat_uri()
+    _token = get_kobocat_token()
+
+    data_endpoint = f"{_formserver}api/v1/forms"
+    _headers = {"Accept": "application/json", "Authorization": f"Basic {_token}"}
+
+    request_paramaters = {"id_string": form_id}
+
+    f = None
+
+    try:
+        f = requests.get(data_endpoint, params=request_paramaters, headers=_headers)
+    except Exception as e:
+        logger.error(e)
+        return None
+
+    # @TODO catch JSON parsing errors (the server can? something throw back HTML)
+    server_response = f.json()
+
+    if not type(server_response) is list:
+        return None
+
+    server_response = server_response[0]
+
+    return server_response["formid"]
+
+
+def get_user_last_submission(form_name, user):
+    query = {"user_id": str(user.id)}
+    count = 1
+    sort = {
+        "submission_time": -1,
+    }
+
+    result = get_submission_data(form_name, query, count=count, sort=sort)
+
+    if not type(result) is list:
+        return None
+
+    if len(result) > 0:
+        return result[0]
+
+    return None
+
+
 def get_form_schema(form_name, request=None, user=None):
     """
-        Get the form schema from kobo cat
+        Get the form schema from kobo toolbox
 
         @param form_name - the name of the form
         @returns parsed form schema JSON
@@ -123,8 +184,10 @@ def get_form_schema(form_name, request=None, user=None):
 
     return_schema = None
 
+    last_submission = get_user_last_submission(form_name, user)
+
     try:
-        return_schema = parse_kobo_json(r, request, user)
+        return_schema = parse_kobo_json(r, request, user, last_submission)
     except Exception as e:
         logging.exception(e)
         return None
@@ -182,30 +245,39 @@ def submit_form(form_name, form_data, user_id):
     return server_response
 
 
-def get_submission_data(formid, query=None):
+def get_submission_data(form_name, query=None, count=None, sort=None):
     """
         Gets submissoin data for a form
 
         @param formid - kpi asset id
-        @param query - query the data
+        @param query - query the data as object with kobocat params
     """
+    form_id = get_form_pk_from_name(form_name)
+
+    if not form_id:
+        logger.info(f"get_form_id_from_name got no form id for form: {form_name}")
+        return None
+
     _formserver = get_kobocat_uri()
     _token = get_kobocat_token()
 
-    data_endpoint = f"{_formserver}api/v1/data"
+    data_endpoint = f"{_formserver}api/v1/data/{form_id}"
     _headers = {"Accept": "application/json", "Authorization": f"Basic {_token}"}
 
     f = None
-    submission_parcel = {
-        "id": formid,
-        "submission": submission,
-    }
 
-    if query:
-        submission_parcel["query"] = query
+    _q = {"query": json.dumps(query)}
+
+    if count:
+        _q["limit"] = count
+
+    if sort:
+        _q["sort"] = json.dumps(sort)
+
+    payload_str = "&".join("%s=%s" % (k, v) for k, v in _q.items())
 
     try:
-        f = requests.post(data_endpoint, json=submission_parcel, headers=_headers)
+        f = requests.get(data_endpoint, params=_q, headers=_headers)
     except Exception as e:
         logger.error(e)
         return None
@@ -213,7 +285,31 @@ def get_submission_data(formid, query=None):
     # @TODO catch JSON parsing errors (the server can? something throw back HTML)
     server_response = f.json()
 
-    return server_response
+    if not type(server_response) is list:
+        return None
+
+    records = []
+
+    for record in server_response:
+        records.append(kobocat_transform_transport(record))
+
+    return records
+
+
+def kobocat_transform_transport(record):
+    SKIP_FIELDS = ["meta/instanceID", "_bamboo_dataset_id", "_attachments"]
+    record_out = {}
+
+    for i in record.keys():
+        if i.startswith("transport/"):
+            _, field = i.split("transport/", 1)
+            record_out[field] = record[i]
+        elif i in SKIP_FIELDS:
+            continue
+        else:
+            record_out[i.lstrip("_")] = record[i]
+
+    return record_out
 
 
 def get_submission_stats(form_name):

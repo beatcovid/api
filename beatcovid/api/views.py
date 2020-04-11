@@ -57,7 +57,6 @@ def FormSchema(request, form_name):
     user = get_user_from_request(request)
     form_name = _clean_form_name.sub("", form_name)
 
-    logger.debug("GOT USER ===== %s", user.id)
     # @TODO avoid prop drilling request down
     result = get_form_schema(form_name, request, user)
 
@@ -81,10 +80,25 @@ def FormStats(request, form_name):
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsAdminUser])
-def FormData(request, form_name, query=None):
+def FormData(request, form_name):
     form_name = _clean_form_name.sub("", form_name)
+    query = request.GET.get("query", None)
+    count = request.GET.get("count", None)
+    sort = request.GET.get("sort", None)
 
-    result = get_submission_data(form_name, query)
+    query = json.loads(query)
+
+    _q = {
+        "query": query,
+    }
+
+    if count:
+        _q["limit"] = count
+
+    if sort:
+        _q["sort"] = sort
+
+    result = get_submission_data(form_name, _q)
 
     if not result:
         raise Http404
