@@ -143,6 +143,7 @@ REST_FRAMEWORK = {
 
 # session cookie settings
 SESSION_SAVE_EVERY_REQUEST = False
+SESSION_COOKIE_SAMESITE = None
 SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 365 * 5  # 5 years
 
