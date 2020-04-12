@@ -75,7 +75,10 @@ def FormStats(request, form_name):
     if not result:
         raise Http404
 
-    return Response(result)
+    r = Response(result)
+    r["access-control-allow-credentials"] = "true"
+
+    return r
 
 
 @api_view(["GET"])
