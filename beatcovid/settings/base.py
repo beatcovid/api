@@ -55,6 +55,10 @@ CORS_ORIGIN_REGEX_WHITELIST = [
     r"https://staging.beatcovid19now.org",
 ]
 
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOW_HEADERS = ["x-device-id"]
+
 # Application definition
 INSTALLED_APPS = [
     # core
