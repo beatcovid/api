@@ -38,9 +38,9 @@ else:
 ALLOWED_HOSTS = [
     "api.stopcovid.infotorch.org",
     "api.beatcovid19now.org",
+    "api.beatcovid19now.com",
     "api.staging.beatcovid19now.org",
     "api.beatcovid.test",
-    "127.0.0.10",
     "127.0.0.1",
     "localhost",
 ]
@@ -48,12 +48,10 @@ ALLOWED_HOSTS = [
 ALLOWED_CLIENT_HOSTS = ALLOWED_HOSTS
 
 CORS_ORIGIN_REGEX_WHITELIST = [
-    r"https?://127\.0\.0\.\d+(:?\:\d{4})?",
     r"https://beatcovid19now.org",
     r"https://beatcovid.test",
     r"https://beatcovid19now.com",
     r"https://stopcovid.infotorch.org",
-    r"https://staging.beatcovid19now.org",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
