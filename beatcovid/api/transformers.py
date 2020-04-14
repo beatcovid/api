@@ -25,7 +25,9 @@ def parse_form_label(label):
 
     _output = html.unescape(_output)
 
-    _output = markdown.markdown(_output)
+    _output = markdown.markdown(
+        _output, extensions=["pymdownx.emoji", "pymdownx.smartsymbols", "extra"]
+    )
 
     _output = _strip_outer_tags(_output)
 
