@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.urls import include, path
 
 from beatcovid.api.views import FormData, FormSchema, FormStats, FormSubmission
-from beatcovid.respondent.views import UserDetailView
+from beatcovid.respondent.views import UserDetailView, TransferRequest, GetUID
 
 admin.site.site_header = "beatcovid19 Admin"
 admin.site.site_title = "beatcovid19 Admin"
@@ -17,5 +17,7 @@ urlpatterns = [
     path("api/form/submit/<str:form_name>/", FormSubmission),
     path("api/form/data/<str:form_name>/", FormData),
     path("api/user/", UserDetailView),
+    path("api/transfer/request/", TransferRequest.as_view()),
+    path("api/transfer/getUID/", GetUID.as_view()),
     path("admin/", admin.site.urls),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -34,3 +34,14 @@ class Session(models.Model):
     device_id = models.CharField(
         max_length=256, verbose_name="User device ID", db_index=True, blank=True
     )
+
+
+def default_expiry_date():
+    now = datetime.now()
+    expiry = now + timedelta(minutes=20)
+    return expiry
+
+class TransitionAssistant(models.Model):
+    Respondent = models.ForeignKey('Respondent', models.DO_NOTHING)
+    expires_at = models.DateTimeField(default=default_expiry_date)
+    transfer_key = models.CharField(max_length=6, unique=True)
