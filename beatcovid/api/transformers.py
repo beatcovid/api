@@ -143,7 +143,6 @@ def parse_kobo_json(form_json, request, user, last_submission=None):
         "user": {
             "id": str(user.id),
             "submission": user.submissions,
-            "last_submission": user.last_submission,
             "last_login": user.last_login,
             "first_login": user.created_at,
         },
@@ -182,10 +181,23 @@ def parse_kobo_json(form_json, request, user, last_submission=None):
         else:
             _global = _parse_question(si, choices, request)
 
+            if _global["name"] == "user_id":
+                _global["calculation"] = str(user.id)
+                _global["required"] = True
+
             _globals.append(_global)
 
+    # filter last submission
     if last_submission:
-        _output["user"]["last_submission"] = {k: last_submission[k] for k in retained}
+        _l = {k: last_submission[k] for k in retained}
+    else:
+        _l = {}
+
+    # attach if it contains values
+    if len(list(_l.keys())):
+        _output["user"]["last_submission"] = _l
+    else:
+        _output["user"]["last_submission"] = False
 
     _output["survey"] = {"global": _globals, "steps": steps}
     return _output
