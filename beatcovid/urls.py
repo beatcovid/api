@@ -17,7 +17,6 @@ admin.site.site_title = "beatcovid19 Admin"
 admin.site.index_title = "beatcovid19 Admin"
 
 urlpatterns = [
-    path("api/", include("beatcovid.api.urls")),
     path("api/form/schema/<str:form_name>/", FormSchema),
     path("api/form/stats/<str:form_name>/", FormStats),
     path("api/form/submit/<str:form_name>/", FormSubmission),

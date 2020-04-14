@@ -189,7 +189,7 @@ def parse_kobo_json(form_json, request, user, last_submission=None):
 
     # filter last submission
     if last_submission:
-        _l = {k: last_submission[k] for k in retained}
+        _l = {k: last_submission[k] for k in retained if k in last_submission}
     else:
         _l = {}
 
