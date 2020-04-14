@@ -45,7 +45,7 @@ def FormSubmission(request, form_name):
             logger.info(
                 f"Mismatch error: User is {user.id} while submitted is {submitted_user} "
             )
-            raise HttpResponseBadRequest("User mismatch")
+            # raise HttpResponseBadRequest("User mismatch")
 
     result = submit_form(form_name, submission, str(user.id))
 

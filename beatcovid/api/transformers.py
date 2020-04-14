@@ -35,45 +35,32 @@ def parse_form_label(label):
 
 
 def _parse_question(si, choices, request):
-    q = {"id": si["$kuid"], "type": si["type"]}
+    q = {"id": si["$kuid"]}
 
-    if "name" in si:
-        q["name"] = si["name"]
+    mapped_fields = [
+        "type",
+        "name",
+        "label",
+        "appearance",
+        "relevant",
+        "hint",
+        "calculated",
+        "required",
+        "constraint",
+        "constraint_message",
+        "calculation",
+        "parameters",
+    ]
 
-    if "label" in si:
-        q["label"] = parse_form_label(si["label"])
+    for f in mapped_fields:
+        if f in si:
+            q[f] = si[f]
 
-    if "appearance" in si:
-        q["appearance"] = si["appearance"]
+    if "label" in q:
+        q["label"] = parse_form_label(q["label"])
 
-    if "relevant" in si:
-        q["relevant"] = si["relevant"]
-
-    if "hint" in si:
-        q["hint"] = si["hint"]
-
-    if "calculated" in si:
-        q["value"] = si["calculated"]
-
-    if "required" in si:
-        q["required"] = si["required"]
-    else:
+    if "required" not in q:
         q["required"] = False
-
-    if "constraint" in si:
-        q["constraint"] = si["constraint"]
-
-    if "constraint_message" in si:
-        q["constraint_message"] = si["constraint_message"]
-
-    if "calculation" in si:
-        q["calculation"] = si["calculation"]
-
-    if "parameters" in si:
-        q["parameters"] = si["parameters"]
-
-    if "appearance" in si:
-        q["appearance"] = si["appearance"]
 
     # load externs
     if "extern" in si and (si["extern"] == True or si["extern"].lower() == "true"):
@@ -138,12 +125,17 @@ def parse_kobo_json(form_json, request, user, last_submission=None):
     survey = _json["content"]["survey"]
     # pprint(survey)
 
+    user_language = get_language_from_request(request)
+    # user_language, user_country = language_from_locale(user_locale)
+
     _output = {
         "uid": _json["uid"],
         "name": _json["name"],
         "url": _json["url"],
         "user": {
             "id": str(user.id),
+            "language": user_language,
+            # "country": user_locale,
             "submission": user.submissions,
             "last_login": user.last_login,
             "first_login": user.created_at,
