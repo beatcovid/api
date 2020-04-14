@@ -145,10 +145,6 @@ def get_user_last_submission(form_name, user):
 
     result = get_submission_data(form_name, query, count=count, sort=sort)
 
-    import pprint
-
-    pprint.pprint(result)
-
     if not type(result) is list:
         return None
 
