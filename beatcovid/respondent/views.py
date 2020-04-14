@@ -31,7 +31,7 @@ class TransferRequest(APIView):
         key = ''
         while True:
             key = self.generate_short_key()
-            exits = TransitionAssistant.objects.filter(transfer_key=key).count()
+            exists = TransitionAssistant.objects.filter(transfer_key=key).count()
             if exists == 0:
                 break
         TransitionAssistant(respondent=respondent, transfer_key = key).save()
@@ -47,6 +47,7 @@ class TransferRequest(APIView):
 
 class GetUID(APIView):
     def get(self, request, format=None):
+        from datetime import datetime
         # @TODO get the key from the request:
         key= "ABC123"
 
