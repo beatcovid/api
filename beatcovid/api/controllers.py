@@ -146,7 +146,7 @@ def get_user_last_submission(form_name, user):
     query = {"user_id": str(user.id)}
     count = 1
     sort = {
-        "submission_time": -1,
+        "submission_time": 1,
     }
 
     result = get_submission_data(form_name, query, count=count, sort=sort)
