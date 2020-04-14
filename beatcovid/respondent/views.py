@@ -46,25 +46,27 @@ class TransferRequest(APIView):
         respondent = get_user_from_request(self.request)
 
         key = self.get_or_create_transition_instance(respondent)
-        return Response([key])
+        return Response({"transfer_key": str(key)})
 
 
 class GetUID(APIView):
     def get(self, request, transfer_key=None):
         from datetime import datetime
         from pytz import utc
-        # @TODO should the key be obtained from session instead?
-        key = self.kwargs["transfer_key"]
 
-        now = datetime.now()
-        # @TODO verify we store UTC
-        now = utc.localize(now)
-        transition = TransitionAssistant.objects.filter(transfer_key=key)
-        value = "unknown"
-        if transition.count() == 1:
-            if now > transition.first().expires_at:
-                value = "expired"
-            else:
-                value = transition.first().respondent.id
+        value = "transfer_key not provided"
+        key = request.POST.get("transfer_key")
 
-        return Response([value])
+        if key:
+            now = datetime.now()
+            # @TODO verify we store UTC
+            now = utc.localize(now)
+            transition = TransitionAssistant.objects.filter(transfer_key=key)
+            value = "unknown"
+            if transition.count() == 1:
+                if now > transition.first().expires_at:
+                    value = "expired"
+                else:
+                    value = transition.first().respondent.id
+
+        return Response({"id": str(value)})
