@@ -156,8 +156,7 @@ def parse_kobo_json(form_json, request, user, last_submission=None):
         "translations": _json["content"]["translations"],
     }
 
-    if last_submission:
-        _output["user"]["last_submission"] = last_submission
+    retained = []
 
     steps = []
     step = {"questions": []}
@@ -176,12 +175,17 @@ def parse_kobo_json(form_json, request, user, last_submission=None):
             steps.append(step)
             in_step = False
         elif in_step:
+            if "retain" in si:
+                retained.append(si["name"])
             q = _parse_question(si, choices, request)
             step["questions"].append(q)
         else:
             _global = _parse_question(si, choices, request)
 
             _globals.append(_global)
+
+    if last_submission:
+        _output["user"]["last_submission"] = {k: last_submission[k] for k in retained}
 
     _output["survey"] = {"global": _globals, "steps": steps}
     return _output

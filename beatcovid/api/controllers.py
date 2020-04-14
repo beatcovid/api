@@ -128,6 +128,14 @@ def get_form_pk_from_name(form_name):
     return server_response["formid"]
 
 
+def get_user_symptoms(user):
+    submissions = get_user_submissions("beatcovid19now", user)
+
+    tracker = {"submissions": submissions}
+
+    return tracker
+
+
 def get_user_last_submission(form_name, user):
     query = {"user_id": str(user.id)}
     count = 1
@@ -141,9 +149,26 @@ def get_user_last_submission(form_name, user):
         return None
 
     if len(result) > 0:
-        return result[0]
+        import pprint
+
+        return pprint.pprint(result[0])
 
     return None
+
+
+def get_user_submissions(form_name, user):
+    query = {"user_id": str(user.id)}
+    count = None
+    sort = {
+        "submission_time": -1,
+    }
+
+    results = get_submission_data(form_name, query, count=count, sort=sort)
+
+    if not type(results) is list:
+        return None
+
+    return results
 
 
 def get_form_schema(form_name, request=None, user=None):
