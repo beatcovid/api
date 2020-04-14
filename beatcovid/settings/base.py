@@ -4,10 +4,12 @@ import os
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
+from ..utils import skip_site_packages_logs
 from .environ import env, load_environment
 
 logger = logging.getLogger("beatcovid.settings")
 logger.setLevel(logging.INFO)
+logger.propagate = False
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -217,6 +219,10 @@ LOGGING = {
         },
         "console": {"class": "logging.StreamHandler", "level": "DEBUG"},
     },
+    "skip_site_packages_logs": {
+        "()": "django.utils.log.CallbackFilter",
+        "callback": skip_site_packages_logs,
+    },
     "loggers": {
         "django": {"handlers": ["file"], "level": "INFO", "propagate": True},
         "django.utils.autoreload": {"level": "INFO",},
@@ -229,18 +235,14 @@ if DEBUG == True:
     LOGGING["loggers"]["django"] = {
         "handlers": ["console"],
         "level": "DEBUG",
-        "propagate": True,
+        "propagate": False,
     }
     LOGGING["loggers"]["beatcovid"] = {
         "handlers": ["console"],
         "level": "DEBUG",
-        "propagate": True,
+        "propagate": False,
     }
-    LOGGING["loggers"]["requests.packages.urllib3"] = {
-        "handlers": ["console"],
-        "level": "DEBUG",
-        "propagate": True,
-    }
+
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
