@@ -94,8 +94,7 @@ def load_externs(list_name, request):
         languages = []
         languages_top = []
 
-        user_locale = get_language_from_request(request)
-        user_language, user_country = language_from_locale(user_locale)
+        user_language = get_language_from_request(request)
 
         for l in Language.objects.all():
             if l.iso_639_1 == user_language:
@@ -106,6 +105,8 @@ def load_externs(list_name, request):
                 languages.append(
                     {"id": "languages", "value": l.iso_639_1, "label": l.name_en}
                 )
+
+        languages_top.append({"id": "languages", "value": None, "label": "-----------"})
 
         return languages_top + languages
 
@@ -123,10 +124,8 @@ def parse_kobo_json(form_json, request, user, last_submission=None):
     _json = form_json
     choices = _json["content"]["choices"]
     survey = _json["content"]["survey"]
-    # pprint(survey)
 
     user_language = get_language_from_request(request)
-    # user_language, user_country = language_from_locale(user_locale)
 
     _output = {
         "uid": _json["uid"],

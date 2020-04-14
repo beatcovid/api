@@ -248,12 +248,11 @@ def submit_form(form_name, form_data, user_id):
 
     submission_parcel = {
         "id": formid,
-        "submission": {
-            "transport": form_data,
-            "meta": {"instanceID": f"uuid:{_uuid}"},
-            "user_id": user_id,
-        },
+        "submission": form_data,
     }
+
+    submission_parcel["meta"] = {"instanceID": f"uuid:{_uuid}"}
+    submission_parcel["user_id"] = user_id
 
     try:
         f = requests.post(submission_endpoint, json=submission_parcel, headers=_headers)
