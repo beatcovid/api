@@ -34,6 +34,12 @@ def get_kobocat_token():
     raise Exception("KOBOCAT_CREDENTIALS is not set")
 
 
+def get_submission_count_base():
+    if settings.SUBMISSION_COUNT_BASE:
+        return settings.SUBMISSION_COUNT_BASE
+    return 0
+
+
 def get_server_form_by_name(form_name):
     """
         Get list of forms from server
@@ -374,10 +380,12 @@ def get_submission_stats(form_name):
 
     server_response = server_response[0]
 
+    submission_count_base = get_submission_count_base()
+
     beatcovid_response = {
         "form": server_response["title"],
         "submissions_today": server_response["submission_count_for_today"],
-        "submissions": server_response["num_of_submissions"],
+        "submissions": submission_count_base + server_response["num_of_submissions"],
         "submission_last": server_response["last_submission_time"],
         "date_modified": server_response["date_modified"],
     }
