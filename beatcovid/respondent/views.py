@@ -52,18 +52,19 @@ class TransferRequest(APIView):
 class GetUID(APIView):
     def get(self, request, transfer_key=None):
         from datetime import datetime
+        from pytz import utc
         # @TODO should the key be obtained from session instead?
         key = self.kwargs["transfer_key"]
 
         now = datetime.now()
+        # @TODO verify we store UTC
+        now = utc.localize(now)
         transition = TransitionAssistant.objects.filter(transfer_key=key)
         value = "unknown"
         if transition.count() == 1:
-            # @TODO fix offset-naive vs offset-aware
-            #if now > transition.first().expires_at:
-            #    value = "expired"
-            #else:
-            value = transition.first().respondent.id
-            #    value = transition.first().respondent.id
+            if now > transition.first().expires_at:
+                value = "expired"
+            else:
+                value = transition.first().respondent.id
 
         return Response([value])
