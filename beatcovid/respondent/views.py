@@ -27,37 +27,43 @@ class TransferRequest(APIView):
         key = ''.join(choice(char_set) for i in range(length))
         return key
 
-    def create_transition_instance(self, respondent):
-        key = ''
-        while True:
-            key = self.generate_short_key()
-            exists = TransitionAssistant.objects.filter(transfer_key=key).count()
-            if exists == 0:
-                break
-        TransitionAssistant(respondent=respondent, transfer_key = key).save()
+    def get_or_create_transition_instance(self, respondent):
+        ta = TransitionAssistant.objects.filter(respondent=respondent)
+        ta_exists = ta.count()
+        if ta_exists:
+            key = ta.first().key
+        else:
+            key = ''
+            while True:
+                key = self.generate_short_key()
+                exists = TransitionAssistant.objects.filter(transfer_key=key).count()
+                if exists == 0:
+                    break
+            TransitionAssistant(respondent=respondent, transfer_key = key).save()
         return key
 
     def get(self, request, format=None):
-        # @TODO get the user somehow, not sure how to use the API view:
-        respondent = Respondent.objects.first()
+        respondent = get_user_from_request(self.request)
 
-        key = self.create_transition_instance(respondent)
+        key = self.get_or_create_transition_instance(respondent)
         return Response([key])
 
 
 class GetUID(APIView):
-    def get(self, request, format=None):
+    def get(self, request, transfer_key=None):
         from datetime import datetime
-        # @TODO get the key from the request:
-        key= "ABC123"
+        # @TODO should the key be obtained from session instead?
+        key = self.kwargs["transfer_key"]
 
         now = datetime.now()
-        transtion = TransitionAssistant.objects().get(key=key)
+        transition = TransitionAssistant.objects.filter(transfer_key=key)
         value = "unknown"
         if transition.count() == 1:
-            if now > respondent.first()["expires_at"]:
-                value = "expired"
-            else:
-                value = respondent.first()["uid"]
+            # @TODO fix offset-naive vs offset-aware
+            #if now > transition.first().expires_at:
+            #    value = "expired"
+            #else:
+            value = transition.first().respondent.id
+            #    value = transition.first().respondent.id
 
         return Response([value])

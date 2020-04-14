@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('expires_at', models.DateTimeField(default=beatcovid.respondent.models.default_expiry_date)),
                 ('transfer_key', models.CharField(max_length=6, unique=True)),
-                ('Respondent', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='respondent.Respondent')),
+                ('respondent', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='respondent.Respondent')),
             ],
         ),
     ]
