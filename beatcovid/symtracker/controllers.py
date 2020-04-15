@@ -81,7 +81,7 @@ daily_activities = [
     "leaveroom",
 ]
 
-non_risk_symptoms = respiratory_problems + general_symptoms + daily_activities
+non_risk_symptoms = [s for s in all_symptoms if not s in risk_symptoms]
 
 risk_scores = list([i for i in string.ascii_uppercase[:6]])
 
