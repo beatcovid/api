@@ -83,7 +83,7 @@ daily_activities = [
 
 non_risk_symptoms = respiratory_problems + general_symptoms + daily_activities
 
-risk_scores = list(reversed([i for i in string.ascii_uppercase[:6]]))
+risk_scores = list([i for i in string.ascii_uppercase[:6]])
 
 __is_number = re.compile("^\d+$")
 __is_single_number = re.compile("^\d$")
