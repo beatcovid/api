@@ -10,8 +10,9 @@ from beatcovid.api.views import (
     FormStats,
     FormSubmission,
     SymptomTracker,
+    UserSubmissionView,
 )
-from beatcovid.respondent.views import UserDetailView, TransferRequest, GetUID
+from beatcovid.respondent.views import GetUID, TransferRequest, UserDetailView
 
 admin.site.site_header = "beatcovid19 Admin"
 admin.site.site_title = "beatcovid19 Admin"
@@ -25,6 +26,8 @@ urlpatterns = [
     path("api/form/submit/<str:form_name>/", FormSubmission),
     path("api/form/data/<str:form_name>/", FormData),
     path("api/tracker/", SymptomTracker),
+    path("api/user/submissions/<str:form_name>/", UserSubmissionView),
+    path("api/user/submissions/", UserSubmissionView),
     path("api/user/", UserDetailView),
     path("api/transfer/request/", TransferRequest.as_view()),
     path("api/transfer/getUID/", GetUID.as_view()),
