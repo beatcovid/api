@@ -291,7 +291,7 @@ def get_user_report_from_survey(survey):
         "contact_close": contact_close_score,
         "scores": {
             "summary": {
-                "respirotary": {
+                "respiratory": {
                     "value": respirotary_problem_score,
                     "max": len(respiratory_problems) * 4,
                 },
