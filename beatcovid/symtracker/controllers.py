@@ -144,20 +144,6 @@ def cast_bool_strings(tag):
     return tag
 
 
-# def get_user_submissions(form_name, user):
-#     query = {"user_id": str(user.id)}
-#     sort = {
-#         "submission_time": 1,
-#     }
-
-#     results = get_submission_data(form_name, query, sort=sort)
-
-#     if not type(results) is list:
-#         return []
-
-#     return results
-
-
 def get_user_report(user, request):
     survey = get_user_submissions("beatcovid19now", user)
     schema = get_form_schema("beatcovid19now", request, user)
@@ -217,6 +203,35 @@ def parse_survey(survey):
     survey_out["contact_details"] = contact
 
     return survey_out
+
+
+def get_label_for_field(field, schema):
+    if not schema:
+        return field
+
+    if not "survey" in schema:
+        return field
+
+    if not "steps" in schema["survey"]:
+        return field
+
+    steps = schema["survey"]["steps"]
+
+    _label_map = {}
+
+    for step in steps:
+        for question in step["questions"]:
+            if "name" in question and "label" in question:
+                _label_map[question["name"]] = question["label"]
+            if "choices" in question:
+                for choice in question["choices"]:
+                    if "value" in choice and "label" in choice:
+                        _label_map[choice["value"]] = choice["label"]
+
+    if field in _label_map:
+        return _label_map[field]
+
+    return field
 
 
 def get_user_report_from_survey(survey, schema=None):
@@ -341,14 +356,26 @@ def get_user_report_from_survey(survey, schema=None):
     }
 
     report["scores"]["main"] = {
-        sym.capitalize(): get_value_label(survey["symptom_" + sym])
+        get_label_for_field("symptom_" + sym, schema): get_value_label(
+            survey["symptom_" + sym]
+        )
         for sym in risk_symptoms
     }
 
     report["scores"]["other"] = {
-        sym.capitalize(): get_value_label(survey["symptom_" + sym])
+        get_label_for_field("symptom_" + sym, schema): get_value_label(
+            survey["symptom_" + sym]
+        )
         for sym in non_risk_symptoms
         if "symptom_" + sym in survey
+    }
+
+    report["scores"]["activities"] = {
+        get_label_for_field("activity_" + sym, schema): get_value_label(
+            survey["activity_" + sym]
+        )
+        for sym in daily_activities
+        if "activity_" + sym in survey
     }
 
     return report
