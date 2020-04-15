@@ -125,14 +125,22 @@ def parse_kobo_json(form_json, request, user, last_submission=None):
     choices = _json["content"]["choices"]
     survey = _json["content"]["survey"]
 
+    if not user or not user.id:
+        logger.error("did not receive a user id when transforming form")
+
     user_language = get_language_from_request(request)
+
+    if user and user.id:
+        user_id = str(user.id)
+    else:
+        user_id = None
 
     _output = {
         "uid": _json["uid"],
         "name": _json["name"],
         "url": _json["url"],
         "user": {
-            "id": str(user.id),
+            "id": user_id,
             "language": user_language,
             # "country": user_locale,
             "submission": user.submissions,
@@ -174,8 +182,8 @@ def parse_kobo_json(form_json, request, user, last_submission=None):
         else:
             _global = _parse_question(si, choices, request)
 
-            if _global["name"] == "user_id":
-                _global["calculation"] = str(user.id)
+            if _global["name"] == "user_id" and user_id:
+                _global["calculation"] = user_id
                 _global["required"] = True
 
             _globals.append(_global)

@@ -20,10 +20,10 @@ from .controllers import get_user_report
 def SymptomTracker(request):
     user = get_user_from_request(request)
 
-    if not user:
+    if not user.id:
         raise Http404
 
-    result = get_user_report(user)
+    result = get_user_report(user, request)
 
     if not result:
         raise Http404

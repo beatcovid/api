@@ -135,6 +135,9 @@ def get_form_pk_from_name(form_name):
 
 
 def get_user_last_submission(form_name, user):
+    if not user or not user.id:
+        return None
+
     query = {"user_id": str(user.id)}
     limit = 1
     sort = {
@@ -167,7 +170,7 @@ def get_user_submissions(form_name, user):
     return results
 
 
-def get_form_schema(form_name, request=None, user=None):
+def get_form_schema(form_name, request, user):
     """
         Get the form schema from kobo toolbox
 

@@ -6,6 +6,7 @@ import string
 import sys
 
 from beatcovid.api.controllers import (
+    get_form_schema,
     get_submission_data,
     get_survey_user_count,
     get_user_last_submission,
@@ -157,12 +158,13 @@ def get_user_submissions(form_name, user):
     return results
 
 
-def get_user_report(user):
-    # survey = get_user_submissions("beatcovid19now", "9fdbf6f9c4a942da8a1bccff36e5e3f8")
+def get_user_report(user, request):
     survey = get_user_submissions("beatcovid19now", user)
+    schema = get_form_schema("beatcovid19now", request, user)
 
     if survey and type(survey) is list:
-        return get_user_report_from_survey(survey[0])
+        return get_user_report_from_survey(survey[0], schema)
+
     return None
 
 
@@ -217,7 +219,7 @@ def parse_survey(survey):
     return survey_out
 
 
-def get_user_report_from_survey(survey):
+def get_user_report_from_survey(survey, schema=None):
 
     # invalid survey 3 is a bit arbitary
     if len(survey.keys()) < 3:
