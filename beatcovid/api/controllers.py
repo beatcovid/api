@@ -136,12 +136,12 @@ def get_form_pk_from_name(form_name):
 
 def get_user_last_submission(form_name, user):
     query = {"user_id": str(user.id)}
-    count = 1
+    limit = 1
     sort = {
         "submission_time": 1,
     }
 
-    result = get_submission_data(form_name, query, count=count, sort=sort)
+    result = get_submission_data(form_name, query, limit=limit, sort=sort)
 
     if not type(result) is list:
         return None
@@ -156,7 +156,7 @@ def get_user_submissions(form_name, user):
     query = {"user_id": str(user.id)}
     count = None
     sort = {
-        "submission_time": -1,
+        "submission_time": 1,
     }
 
     results = get_submission_data(form_name, query, count=count, sort=sort)
@@ -265,7 +265,18 @@ def submit_form(form_name, form_data, user_id):
     return server_response
 
 
-def get_submission_data(form_name, query=None, count=None, sort=None):
+def get_survey_user_count(form_name="beatcovid19now"):
+    q = get_submission_data(
+        form_name, query={"date": {"gt$": "2014-09-29T01:02:03+0000"}}, count=1
+    )
+
+    if "count" in q:
+        return q["count"]
+
+    return 0
+
+
+def get_submission_data(form_name, query=None, limit=None, count=None, sort=None):
     """
         Gets submissoin data for a form
 
@@ -286,10 +297,16 @@ def get_submission_data(form_name, query=None, count=None, sort=None):
 
     f = None
 
-    _q = {"query": json.dumps(query)}
+    _q = {}
+
+    if query:
+        _q["query"]: json.dumps(query)
+
+    if limit:
+        _q["limit"] = limit
 
     if count:
-        _q["limit"] = count
+        _q["count"] = count
 
     if sort:
         _q["sort"] = json.dumps(sort)
@@ -305,15 +322,17 @@ def get_submission_data(form_name, query=None, count=None, sort=None):
     # @TODO catch JSON parsing errors (the server can? something throw back HTML)
     server_response = f.json()
 
-    if not type(server_response) is list:
+    if not type(server_response) is list or not type(server_response) is dict:
         return None
 
-    records = []
+    return server_response
 
-    for record in server_response:
-        records.append(kobocat_transform_transport(record))
+    # records = []
 
-    return records
+    # for record in server_response:
+    #     records.append(kobocat_transform_transport(record))
+
+    # return records
 
 
 def kobocat_transform_transport(record):

@@ -5,8 +5,11 @@ import re
 import string
 import sys
 
-from beatcovid.api.controllers import (get_submission_data,
-                                       get_user_last_submission)
+from beatcovid.api.controllers import (
+    get_submission_data,
+    get_survey_user_count,
+    get_user_last_submission,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -222,11 +225,6 @@ def get_user_report_from_survey(survey):
 
     _parsed_survey = parse_survey(survey)
 
-    from pprint import pprint
-
-    pprint(survey)
-    pprint(_parsed_survey)
-
     respirotary_problem_score = sum(
         (
             {
@@ -286,6 +284,7 @@ def get_user_report_from_survey(survey):
         traven_score = True
 
     level = ""
+    total_participants = get_survey_user_count()
 
     # calculate risk score
     risk_score = 0
@@ -322,6 +321,7 @@ def get_user_report_from_survey(survey):
         "travel": travel_score,
         "contact": contact_score,
         "contact_close": contact_close_score,
+        "total_participants": total_participants,
         "scores": {
             "summary": {
                 "respiratory": {
