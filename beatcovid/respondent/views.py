@@ -18,8 +18,27 @@ def UserDetailView(request):
     return Response({"user": str(user.id)})
 
 
-class TransferRequest(APIView):
+def check_if_expired(expiry_date, minimum_minutes=0):
+    """
+       Check if the time now + minimum_minutes is after the expiry date
+    """
+    from datetime import datetime, timedelta
+    from pytz import utc
 
+    now = datetime.now() + timedelta(minutes=minimum_minutes)
+    # @TODO verify we store UTC
+    now = utc.localize(now)
+    if now > expiry_date:
+        return True
+    else:
+        return False
+
+class TransferRequest(APIView):
+    """
+    Get an existing transfer key if valid for at least MIN_VALID minutes
+    or generate a new one.
+    """
+    MIN_VALID=5
     def generate_short_key(self, length=6):
         from random import choice
         from string import ascii_letters, digits
@@ -28,10 +47,11 @@ class TransferRequest(APIView):
         return key
 
     def get_or_create_transition_instance(self, respondent):
-        ta = TransitionAssistant.objects.filter(respondent=respondent)
+        ta = TransitionAssistant.objects.filter(respondent=respondent).order_by("-expires_at")
         ta_exists = ta.count()
-        if ta_exists:
-            key = ta.first().transfer_key
+        if ta_exists and not check_if_expired(ta.first().expires_at,
+                                              minimum_minutes=MIN_VALID):
+                key = ta.first().transfer_key
         else:
             key = ''
             while True:
@@ -51,22 +71,15 @@ class TransferRequest(APIView):
 
 class GetUID(APIView):
     def get(self, request):
-        from datetime import datetime
-        from pytz import utc
-
         value = "transfer_key not provided"
         key = request.POST.get("transfer_key")
-
         if key:
-            now = datetime.now()
-            # @TODO verify we store UTC
-            now = utc.localize(now)
-            transition = TransitionAssistant.objects.filter(transfer_key=key)
+            ta = TransitionAssistant.objects.filter(transfer_key=key).order_by("-expires_at")
             value = "unknown"
-            if transition.count() == 1:
-                if now > transition.first().expires_at:
+            if ta.count() == 1:
+                if check_if_expired(ta.first().expires_at):
                     value = "expired"
                 else:
-                    value = transition.first().respondent.id
+                    value = ta.first().respondent.id
 
         return Response({"id": str(value)})
