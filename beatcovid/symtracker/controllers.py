@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import re
+import string
 import sys
 
 from beatcovid.api.controllers import get_submission_data, get_user_last_submission
@@ -76,6 +77,7 @@ daily_activities = [
 
 non_risk_symptoms = respiratory_problems + general_symptoms + daily_activities
 
+risk_scores = list(reversed([i for i in string.ascii_uppercase[:6]]))
 
 __is_number = re.compile("^\d+$")
 __is_single_number = re.compile("^\d$")
@@ -150,7 +152,8 @@ def get_user_submissions(form_name, user):
 
 
 def get_user_report(user):
-    survey = get_user_submissions("beatcovid19now", "9fdbf6f9c4a942da8a1bccff36e5e3f8")
+    # survey = get_user_submissions("beatcovid19now", "9fdbf6f9c4a942da8a1bccff36e5e3f8")
+    survey = get_user_submissions("beatcovid19now", user)
 
     if survey and type(survey) is list:
         return get_user_report_from_survey(survey[0])
@@ -221,6 +224,14 @@ def get_user_report_from_survey(survey):
         ).values()
     )
 
+    risk_symptom_values = {
+        k: _parsed_survey["symptoms"][k]
+        for k in _parsed_survey["symptoms"]
+        if k in risk_symptoms
+    }
+
+    risk_symptom_score = sum((risk_symptom_values).values())
+
     risk_number = 0
 
     contact_score = False
@@ -242,12 +253,39 @@ def get_user_report_from_survey(survey):
         traven_score = True
 
     level = ""
-    risk = "A"
+
+    # calculate risk score
+    risk_score = 0
+
+    risky_symptom_scores_greater_than = len(
+        [sc for k, v in risk_symptom_values.items() if v >= 2]
+    )
+
+    if travel_score:
+        risk_score += 1
+
+    if contact_score:
+        risk_score += 1
+
+    if contact_close_score:
+        risk_score += 1
+
+    if _parsed_survey["symptoms"]["nobreath"] >= 2:
+        risk_score += 2
+
+    if risky_symptom_scores_greater_than:
+        risk_score += 1
+
+    if risky_symptom_scores_greater_than > 2:
+        risk_score += 1
+
+    if risk_score >= len(risk_scores):
+        risk_score = len(risk_scores) - 1
 
     report = {
         "level": "",
         "message": "",
-        "risk": risk,
+        "risk": risk_scores[risk_score],
         "travel": travel_score,
         "contact": contact_score,
         "contact_close": contact_close_score,
@@ -259,6 +297,10 @@ def get_user_report_from_survey(survey):
                 },
                 "general": {"value": general_sym_score, "max": len(general_symptoms) * 4},
                 "activity": {"value": activity_score, "max": len(daily_activities) * 4},
+                "covid_risk": {
+                    "value": risk_symptom_score,
+                    "max": len(risk_symptoms) * 4,
+                },
             }
         },
     }
