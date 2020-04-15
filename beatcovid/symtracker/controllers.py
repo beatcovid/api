@@ -10,6 +10,7 @@ from beatcovid.api.controllers import (
     get_submission_data,
     get_survey_user_count,
     get_user_last_submission,
+    get_user_submissions,
 )
 
 logger = logging.getLogger(__name__)
@@ -143,19 +144,18 @@ def cast_bool_strings(tag):
     return tag
 
 
-def get_user_submissions(form_name, user):
-    query = {}
-    count = None
-    sort = {
-        "submission_time": -1,
-    }
+# def get_user_submissions(form_name, user):
+#     query = {"user_id": str(user.id)}
+#     sort = {
+#         "submission_time": 1,
+#     }
 
-    results = get_submission_data(form_name, query, count=count, sort=sort)
+#     results = get_submission_data(form_name, query, sort=sort)
 
-    if not type(results) is list:
-        return []
+#     if not type(results) is list:
+#         return []
 
-    return results
+#     return results
 
 
 def get_user_report(user, request):

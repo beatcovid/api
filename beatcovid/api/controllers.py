@@ -144,7 +144,7 @@ def get_user_last_submission(form_name, user):
         "submission_time": 1,
     }
 
-    result = get_submission_data(form_name, query, limit=limit, sort=sort)
+    result = get_submission_data(form_name, query=query, limit=limit, sort=sort)
 
     if not type(result) is list:
         return None
@@ -157,14 +157,14 @@ def get_user_last_submission(form_name, user):
 
 def get_user_submissions(form_name, user):
     query = {"user_id": str(user.id)}
-    limit = None
     sort = {
         "submission_time": 1,
     }
 
-    results = get_submission_data(form_name, query, limit=limit, sort=sort)
+    results = get_submission_data(form_name, query)  # , sort=sort)
 
     if not type(results) is list:
+        logger.debug(f"No submissions for user: {user.id}")
         return None
 
     return results
@@ -279,7 +279,7 @@ def get_survey_user_count(form_name="beatcovid19now"):
     return 0
 
 
-def get_submission_data(form_name, query=None, limit=None, count=None, sort=None):
+def get_submission_data(form_name, query, limit=None, count=None, sort=None):
     """
         Gets submissoin data for a form
 
@@ -303,7 +303,7 @@ def get_submission_data(form_name, query=None, limit=None, count=None, sort=None
     _q = {}
 
     if query:
-        _q["query"]: json.dumps(query)
+        _q["query"] = json.dumps(query)
 
     if limit:
         _q["limit"] = limit
@@ -314,10 +314,14 @@ def get_submission_data(form_name, query=None, limit=None, count=None, sort=None
     if sort:
         _q["sort"] = json.dumps(sort)
 
-    payload_str = "&".join("%s=%s" % (k, v) for k, v in _q.items())
+    from urllib.parse import quote_plus
+
+    payload_str = "&".join("%s=%s" % (k, quote_plus(str(v))) for k, v in _q.items())
+
+    logger.debug("get_data query: %s %s", data_endpoint, payload_str)
 
     try:
-        f = requests.get(data_endpoint, params=_q, headers=_headers)
+        f = requests.get(f"{data_endpoint}?{payload_str}", headers=_headers)
     except Exception as e:
         logger.error(e)
         return None
@@ -325,17 +329,7 @@ def get_submission_data(form_name, query=None, limit=None, count=None, sort=None
     # @TODO catch JSON parsing errors (the server can? something throw back HTML)
     server_response = f.json()
 
-    if not type(server_response) is list or not type(server_response) is dict:
-        return None
-
     return server_response
-
-    # records = []
-
-    # for record in server_response:
-    #     records.append(kobocat_transform_transport(record))
-
-    # return records
 
 
 def kobocat_transform_transport(record):
