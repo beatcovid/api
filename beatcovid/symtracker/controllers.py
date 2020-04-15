@@ -347,10 +347,10 @@ def get_user_report_from_survey(survey, schema=None):
                 },
                 "general": {"value": general_sym_score, "max": len(general_symptoms) * 4},
                 "activity": {"value": activity_score, "max": len(daily_activities) * 4},
-                "covid_risk": {
-                    "value": risk_symptom_score,
-                    "max": len(risk_symptoms) * 4,
-                },
+                # "covid_risk": {
+                #     "value": risk_symptom_score,
+                #     "max": len(risk_symptoms) * 4,
+                # },
             }
         },
     }
