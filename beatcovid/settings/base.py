@@ -89,6 +89,7 @@ INSTALLED_APPS = [
     # local
     "beatcovid.api",
     "beatcovid.respondent",
+    "beatcovid.symtracker",
     # third party
     "countries_plus",
     "languages_plus",

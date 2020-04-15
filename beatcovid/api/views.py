@@ -20,7 +20,6 @@ from .controllers import (
     get_submission_data,
     get_submission_stats,
     get_user_submissions,
-    get_user_symptoms,
     submit_form,
 )
 
@@ -97,24 +96,6 @@ def UserSubmissionView(request, form_name="beatcovid19now"):
     result = get_user_submissions(form_name, user)
 
     return Response(result)
-
-
-@api_view(["GET"])
-def SymptomTracker(request):
-    user = get_user_from_request(request)
-
-    if not user:
-        raise Http404
-
-    result = get_user_symptoms(user)
-
-    if not result:
-        raise Http404
-
-    r = Response(result)
-    r["access-control-allow-credentials"] = "true"
-
-    return r
 
 
 @api_view(["GET"])

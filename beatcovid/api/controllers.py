@@ -134,14 +134,6 @@ def get_form_pk_from_name(form_name):
     return server_response["formid"]
 
 
-def get_user_symptoms(user):
-    submissions = get_user_submissions("beatcovid19now", user)
-
-    tracker = {"submissions": submissions}
-
-    return tracker
-
-
 def get_user_last_submission(form_name, user):
     query = {"user_id": str(user.id)}
     count = 1

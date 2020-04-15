@@ -9,10 +9,10 @@ from beatcovid.api.views import (
     FormSchema,
     FormStats,
     FormSubmission,
-    SymptomTracker,
     UserSubmissionView,
 )
 from beatcovid.respondent.views import GetUID, TransferRequest, UserDetailView
+from beatcovid.symtracker.views import SymptomTracker
 
 admin.site.site_header = "beatcovid19 Admin"
 admin.site.site_title = "beatcovid19 Admin"
