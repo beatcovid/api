@@ -31,7 +31,7 @@ class TransferRequest(APIView):
         ta = TransitionAssistant.objects.filter(respondent=respondent)
         ta_exists = ta.count()
         if ta_exists:
-            key = ta.first().key
+            key = ta.first().transfer_key
         else:
             key = ''
             while True:
