@@ -22,7 +22,7 @@ load_environment(os.path.join(BASE_DIR, f".env.{ENV}"))
 DEBUG = env("DEBUG", default=True)
 
 SECRET_KEY = env("SECRET_KEY")
-SENTRY_DSN = env("SENTRY_DSN")
+SENTRY_DSN = env("SENTRY_DSN", default=None)
 
 logger.info("DEBUG is set to {}".format(DEBUG))
 

@@ -4,10 +4,15 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views.generic.base import RedirectView
 
-from beatcovid.api.views import (FormData, FormSchema, FormStats,
-                                 FormSubmission, SymptomTracker,
-                                 UserSubmissionView)
-from beatcovid.respondent.views import UserDetailView
+from beatcovid.api.views import (
+    FormData,
+    FormSchema,
+    FormStats,
+    FormSubmission,
+    SymptomTracker,
+    UserSubmissionView,
+)
+from beatcovid.respondent.views import GetUID, TransferRequest, UserDetailView
 
 admin.site.site_header = "beatcovid19 Admin"
 admin.site.site_title = "beatcovid19 Admin"
@@ -24,6 +29,8 @@ urlpatterns = [
     path("api/user/submissions/<str:form_name>/", UserSubmissionView),
     path("api/user/submissions/", UserSubmissionView),
     path("api/user/", UserDetailView),
+    path("api/transfer/request/", TransferRequest.as_view()),
+    path("api/transfer/getUID/", GetUID.as_view()),
     path("admin/", admin.site.urls),
     path("favicon.ico", favicon_view),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

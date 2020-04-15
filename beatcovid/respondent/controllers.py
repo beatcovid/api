@@ -6,21 +6,31 @@ from .models import Respondent, Session
 logger = logging.getLogger(__name__)
 
 
-def get_user_from_request(request):
+def get_respondent_from_request(request):
     """
-        Retrieves the user from the session
+        Retrieves an existing respondent from the session
 
     """
     user_id = request.session.get("user", None)
-    session_key = request.session._get_or_create_session_key()
-
     u = None
-    s = None
 
     if user_id:
         user_id = uuid.UUID(user_id)
         u = Respondent.objects.get(id=user_id)
         logger.debug(f"Retrieved user {u.id}")
+
+    return u
+
+
+def get_user_from_request(request):
+    """
+        Retrieves the user from the session
+
+    """
+    session_key = request.session._get_or_create_session_key()
+
+    u = get_respondent_from_request(request)
+    s = None
 
     if not u:
         u = Respondent()
