@@ -50,7 +50,7 @@ class TransferRequest(APIView):
 
 
 class GetUID(APIView):
-    def get(self, request, transfer_key=None):
+    def get(self, request):
         from datetime import datetime
         from pytz import utc
 
