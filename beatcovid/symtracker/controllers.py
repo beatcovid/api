@@ -5,7 +5,8 @@ import re
 import string
 import sys
 
-from beatcovid.api.controllers import get_submission_data, get_user_last_submission
+from beatcovid.api.controllers import (get_submission_data,
+                                       get_user_last_submission)
 
 logger = logging.getLogger(__name__)
 
@@ -135,6 +136,8 @@ def cast_bool_strings(tag):
     if tag in ["yes"]:
         return True
 
+    return tag
+
 
 def get_user_submissions(form_name, user):
     query = {}
@@ -168,6 +171,9 @@ def parse_survey(survey):
     worry = {}
     userdetails = {}
     survey_out = {}
+    face_contact = {}
+    feeling = {}
+    contact = {}
 
     for field in survey.keys():
         value = cast_value_strings(survey[field])
@@ -185,13 +191,25 @@ def parse_survey(survey):
         elif field.startswith("userdetail_"):
             _, detail = field.split("_", 1)
             userdetails[detail] = value
+        elif field.startswith("feeling_"):
+            _, detail = field.split("_", 1)
+            feeling[detail] = value
+        elif field.startswith("contact_"):
+            _, detail = field.split("_", 1)
+            contact[detail] = value
+        elif field.startswith("face_contact_"):
+            _, _, c = field.split("_", 2)
+            face_contact[c] = value
         else:
             survey_out[field] = value
 
     survey_out["symptoms"] = symptoms
     survey_out["activities"] = activities
     survey_out["worry"] = worry
-    survey_out["userdetail"] = userdetails
+    survey_out["user_detail"] = userdetails
+    survey_out["face_contact_details"] = face_contact
+    survey_out["feeling"] = feeling
+    survey_out["contact_details"] = contact
 
     return survey_out
 
