@@ -154,12 +154,12 @@ def get_user_last_submission(form_name, user):
 
 def get_user_submissions(form_name, user):
     query = {"user_id": str(user.id)}
-    count = None
+    limit = None
     sort = {
         "submission_time": 1,
     }
 
-    results = get_submission_data(form_name, query, count=count, sort=sort)
+    results = get_submission_data(form_name, query, limit=limit, sort=sort)
 
     if not type(results) is list:
         return None
