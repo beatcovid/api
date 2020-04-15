@@ -160,38 +160,53 @@ def get_user_report(user):
     return None
 
 
-def parse_symptoms(survey):
+def parse_survey(survey):
+    """ make more sense of the survey """
+
     symptoms = {}
     activities = {}
+    worry = {}
+    userdetails = {}
     survey_out = {}
 
     for field in survey.keys():
+        value = cast_value_strings(survey[field])
+        value = cast_bool_strings(value)
+
         if field.startswith("symptom_"):
             _, symptom = field.split("_", 1)
-            symptoms[symptom] = survey[field]
+            symptoms[symptom] = value
         elif field.startswith("activity_"):
             _, activity = field.split("_", 1)
-            activities[activity] = survey[field]
-
+            activities[activity] = value
+        elif field.startswith("worry_"):
+            _, wo = field.split("_", 1)
+            worry[wo] = value
+        elif field.startswith("userdetail_"):
+            _, detail = field.split("_", 1)
+            userdetails[detail] = value
         else:
-            survey_out[field] = survey[field]
+            survey_out[field] = value
 
     survey_out["symptoms"] = symptoms
     survey_out["activities"] = activities
+    survey_out["worry"] = worry
+    survey_out["userdetail"] = userdetails
 
     return survey_out
 
 
 def get_user_report_from_survey(survey):
-    _parsed_survey = {}
 
-    for field in survey.keys():
-        _parsed_survey[field] = cast_value_strings(survey[field])
+    # invalid survey 3 is a bit arbitary
+    if len(survey.keys()) < 3:
+        return {}
 
-    _parsed_survey = parse_symptoms(_parsed_survey)
+    _parsed_survey = parse_survey(survey)
 
     from pprint import pprint
 
+    pprint(survey)
     pprint(_parsed_survey)
 
     respirotary_problem_score = sum(
@@ -258,7 +273,7 @@ def get_user_report_from_survey(survey):
     risk_score = 0
 
     risky_symptom_scores_greater_than = len(
-        [sc for k, v in risk_symptom_values.items() if v >= 2]
+        [v for k, v in risk_symptom_values.items() if v >= 2]
     )
 
     if travel_score:
