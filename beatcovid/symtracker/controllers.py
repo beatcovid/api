@@ -378,6 +378,14 @@ def get_user_report_from_survey(survey, schema=None):
         if "activity_" + sym in survey
     }
 
+    report["scores"]["worries"] = {
+        get_label_for_field("worry_" + sym, schema): get_value_label(
+            survey["worry_" + sym]
+        )
+        for sym in _parsed_survey["worry"].keys()
+        if "worry_" + sym in survey
+    }
+
     return report
 
 
