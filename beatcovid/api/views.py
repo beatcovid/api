@@ -19,6 +19,7 @@ from .controllers import (
     get_form_schema,
     get_submission_data,
     get_submission_stats,
+    get_user_symptoms,
     submit_form,
 )
 
@@ -40,8 +41,11 @@ def FormSubmission(request, form_name):
 
     if "user_id" in submission:
         submitted_user = submission["user_id"]
-        if submitted_user != user.id:
-            raise HttpResponseBadRequest("User mismatch")
+        if submitted_user != str(user.id):
+            logger.info(
+                f"Mismatch error: User is {user.id} while submitted is {submitted_user} "
+            )
+            # raise HttpResponseBadRequest("User mismatch")
 
     result = submit_form(form_name, submission, str(user.id))
 
@@ -71,6 +75,24 @@ def FormStats(request, form_name):
     form_name = _clean_form_name.sub("", form_name)
 
     result = get_submission_stats(form_name)
+
+    if not result:
+        raise Http404
+
+    r = Response(result)
+    r["access-control-allow-credentials"] = "true"
+
+    return r
+
+
+@api_view(["GET"])
+def SymptomTracker(request):
+    user = get_user_from_request(request)
+
+    if not user:
+        raise Http404
+
+    result = get_user_symptoms(user)
 
     if not result:
         raise Http404

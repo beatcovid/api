@@ -34,6 +34,12 @@ def get_kobocat_token():
     raise Exception("KOBOCAT_CREDENTIALS is not set")
 
 
+def get_submission_count_base():
+    if settings.SUBMISSION_COUNT_BASE:
+        return settings.SUBMISSION_COUNT_BASE
+    return 0
+
+
 def get_server_form_by_name(form_name):
     """
         Get list of forms from server
@@ -128,11 +134,19 @@ def get_form_pk_from_name(form_name):
     return server_response["formid"]
 
 
+def get_user_symptoms(user):
+    submissions = get_user_submissions("beatcovid19now", user)
+
+    tracker = {"submissions": submissions}
+
+    return tracker
+
+
 def get_user_last_submission(form_name, user):
     query = {"user_id": str(user.id)}
     count = 1
     sort = {
-        "submission_time": -1,
+        "submission_time": 1,
     }
 
     result = get_submission_data(form_name, query, count=count, sort=sort)
@@ -144,6 +158,21 @@ def get_user_last_submission(form_name, user):
         return result[0]
 
     return None
+
+
+def get_user_submissions(form_name, user):
+    query = {"user_id": str(user.id)}
+    count = None
+    sort = {
+        "submission_time": -1,
+    }
+
+    results = get_submission_data(form_name, query, count=count, sort=sort)
+
+    if not type(results) is list:
+        return None
+
+    return results
 
 
 def get_form_schema(form_name, request=None, user=None):
@@ -225,12 +254,11 @@ def submit_form(form_name, form_data, user_id):
 
     submission_parcel = {
         "id": formid,
-        "submission": {
-            "transport": form_data,
-            "meta": {"instanceID": f"uuid:{_uuid}"},
-            "user_id": user_id,
-        },
+        "submission": form_data,
     }
+
+    submission_parcel["meta"] = {"instanceID": f"uuid:{_uuid}"}
+    submission_parcel["user_id"] = user_id
 
     try:
         f = requests.post(submission_endpoint, json=submission_parcel, headers=_headers)
@@ -352,10 +380,12 @@ def get_submission_stats(form_name):
 
     server_response = server_response[0]
 
+    submission_count_base = get_submission_count_base()
+
     beatcovid_response = {
         "form": server_response["title"],
         "submissions_today": server_response["submission_count_for_today"],
-        "submissions": server_response["num_of_submissions"],
+        "submissions": submission_count_base + server_response["num_of_submissions"],
         "submission_last": server_response["last_submission_time"],
         "date_modified": server_response["date_modified"],
     }
