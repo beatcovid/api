@@ -331,6 +331,11 @@ def get_user_report_from_survey(survey, schema=None):
     if risk_score >= len(risk_scores):
         risk_score = len(risk_scores) - 1
 
+    if "submission_time" in survey:
+        submission_time = survey["submission_time"]
+    else:
+        submission_time = None
+
     report = {
         "level": "",
         "message": "",
@@ -338,6 +343,10 @@ def get_user_report_from_survey(survey, schema=None):
         "travel": travel_score,
         "contact": contact_score,
         "contact_close": contact_close_score,
+        "schema_version": survey["version"],
+        "date_started": survey["start"],
+        "date_submitted": submission_time,
+        "app_version": "1.1.0",
         "total_participants": total_participants,
         "scores": {
             "summary": {
@@ -347,10 +356,6 @@ def get_user_report_from_survey(survey, schema=None):
                 },
                 "general": {"value": general_sym_score, "max": len(general_symptoms) * 4},
                 "activity": {"value": activity_score, "max": len(daily_activities) * 4},
-                # "covid_risk": {
-                #     "value": risk_symptom_score,
-                #     "max": len(risk_symptoms) * 4,
-                # },
             }
         },
     }
