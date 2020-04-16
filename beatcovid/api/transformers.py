@@ -162,6 +162,7 @@ def parse_kobo_json(form_json, request, user, last_submission=None):
     step = {"questions": []}
     _globals = []
     _global = {}
+    _label_map = {}
     in_step = False
     q = {}
     for si in survey:
@@ -178,6 +179,10 @@ def parse_kobo_json(form_json, request, user, last_submission=None):
             if "retain" in si:
                 retained.append(si["name"])
             q = _parse_question(si, choices, request)
+
+            if "name" in q and "label" in q:
+                _label_map[q["name"]] = q["label"]
+
             step["questions"].append(q)
         else:
             _global = _parse_question(si, choices, request)
@@ -201,4 +206,6 @@ def parse_kobo_json(form_json, request, user, last_submission=None):
         _output["user"]["last_submission"] = False
 
     _output["survey"] = {"global": _globals, "steps": steps}
+    _output["labels"] = _label_map
+
     return _output
