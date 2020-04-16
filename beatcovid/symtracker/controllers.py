@@ -297,7 +297,7 @@ def get_user_report_from_survey(survey, schema=None):
         contact_close_score = True
 
     travel_score = False
-    if "travel" in survey and survey["travel"] is "yes":
+    if "travel" in survey and survey["travel"] == "yes":
         traven_score = True
 
     level = ""
