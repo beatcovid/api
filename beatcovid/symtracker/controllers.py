@@ -250,7 +250,7 @@ def get_user_report_from_survey(survey, schema=None):
                 if k in respiratory_problems
             }
         ).values()
-    )
+    ) / len(respiratory_problems)
 
     general_sym_score = sum(
         (
@@ -260,7 +260,7 @@ def get_user_report_from_survey(survey, schema=None):
                 if k in general_symptoms
             }
         ).values()
-    )
+    ) / len(general_symptoms)
 
     activity_score = sum(
         (
@@ -270,7 +270,7 @@ def get_user_report_from_survey(survey, schema=None):
                 if k in daily_activities
             }
         ).values()
-    )
+    ) / len(daily_activities)
 
     risk_symptom_values = {
         k: _parsed_survey["symptoms"][k]
@@ -351,11 +351,17 @@ def get_user_report_from_survey(survey, schema=None):
         "scores": {
             "summary": {
                 "respiratory": {
-                    "value": respirotary_problem_score,
-                    "max": len(respiratory_problems) * 4,
+                    "value": round(respirotary_problem_score, 1),
+                    "max": len(respiratory_problems),
                 },
-                "general": {"value": general_sym_score, "max": len(general_symptoms) * 4},
-                "activity": {"value": activity_score, "max": len(daily_activities) * 4},
+                "general": {
+                    "value": round(general_sym_score, 1),
+                    "max": len(general_symptoms),
+                },
+                "activity": {
+                    "value": round(activity_score, 1),
+                    "max": len(daily_activities),
+                },
             }
         },
     }
