@@ -141,7 +141,7 @@ def get_user_last_submission(form_name, user):
     query = {"user_id": str(user.id)}
     limit = 1
     sort = {
-        "submission_time": 1,
+        "_submission_time": -1,
     }
 
     result = get_submission_data(form_name, query=query, limit=limit, sort=sort)
@@ -158,10 +158,10 @@ def get_user_last_submission(form_name, user):
 def get_user_submissions(form_name, user):
     query = {"user_id": str(user.id)}
     sort = {
-        "submission_time": 1,
+        "_submission_time": -1,
     }
 
-    results = get_submission_data(form_name, query)  # , sort=sort)
+    results = get_submission_data(form_name, query, sort=sort)
 
     if not type(results) is list:
         logger.debug(f"No submissions for user: {user.id}")
