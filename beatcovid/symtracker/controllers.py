@@ -331,8 +331,8 @@ def get_user_report_from_survey(survey, schema=None):
     if risk_score >= len(risk_scores):
         risk_score = len(risk_scores) - 1
 
-    if "submission_time" in survey:
-        submission_time = survey["submission_time"]
+    if "_submission_time" in survey:
+        submission_time = survey["_submission_time"]
     else:
         submission_time = None
 
