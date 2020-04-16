@@ -15,13 +15,9 @@ from rest_framework.response import Response
 
 from beatcovid.respondent.controllers import get_user_from_request
 
-from .controllers import (
-    get_form_schema,
-    get_submission_data,
-    get_submission_stats,
-    get_user_submissions,
-    submit_form,
-)
+from .controllers import (get_form_schema, get_submission_data,
+                          get_submission_stats, get_user_submissions,
+                          submit_form)
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +43,7 @@ def FormSubmission(request, form_name):
             )
             # raise HttpResponseBadRequest("User mismatch")
 
-    result = submit_form(form_name, submission, str(user.id))
+    result = submit_form(form_name, submission, user, request)
 
     if not result:
         print("404")

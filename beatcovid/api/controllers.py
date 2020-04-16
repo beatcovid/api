@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 import uuid
 
 import requests
@@ -219,7 +220,7 @@ def get_form_schema(form_name, request, user):
     return return_schema
 
 
-def submit_form(form_name, form_data, user_id):
+def submit_form(form_name, form_data, user, request):
     """
         Submit a form to Kobo via Kobocat
 
@@ -253,7 +254,9 @@ def submit_form(form_name, form_data, user_id):
     }
 
     submission_parcel["meta"] = {"instanceID": f"uuid:{_uuid}"}
-    submission_parcel["user_id"] = user_id
+    submission_parcel["user_id"] = str(user.id)
+    submission_parcel["server_env"] = os.environ.get("ENV", default="production")
+    submission_parcel["session_id"] = request.session._get_or_create_session_key()
 
     try:
         f = requests.post(submission_endpoint, json=submission_parcel, headers=_headers)
