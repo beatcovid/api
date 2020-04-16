@@ -274,9 +274,7 @@ def submit_form(form_name, form_data, user, request):
 
 
 def get_survey_user_count(form_name="beatcovid19now"):
-    q = get_submission_data(
-        form_name, query={"date": {"gt$": "2014-09-29T01:02:03+0000"}}, count=1
-    )
+    q = get_submission_data(form_name, query={}, count=1)
 
     if "count" in q:
         return q["count"]
