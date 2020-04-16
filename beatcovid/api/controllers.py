@@ -249,6 +249,9 @@ def submit_form(form_name, form_data, user, request):
 
     f = None
 
+    # filter out the __ fields which are usually labels
+    form_data = {k: v for k, v in form_data.items() if not k.startswith("__")}
+
     submission_parcel = {
         "id": formid,
         "submission": form_data,
