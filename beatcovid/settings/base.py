@@ -173,7 +173,7 @@ COOKIE_DOMAIN = env("COOKIE_DOMAIN", default=None)
 if COOKIE_DOMAIN != None:
     SESSION_COOKIE_DOMAIN = COOKIE_DOMAIN.strip('"')
 
-SESSION_COOKIE_NAME = "uid"
+SESSION_COOKIE_NAME = "sid"
 
 # should set this in prod
 

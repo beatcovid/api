@@ -29,6 +29,10 @@ def get_user_from_request(request):
     """
     session_key = request.session._get_or_create_session_key()
 
+    # backwards compat for v1.0
+    if "uid" in request.COOKIES:
+        session_key = request.COOKIES["uid"]
+
     u = get_respondent_from_request(request)
     s = None
 
