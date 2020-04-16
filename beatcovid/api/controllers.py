@@ -7,6 +7,7 @@ import requests
 from django.conf import settings
 
 from .transformers import parse_kobo_json
+from .utils import get_user_agent
 
 logger = logging.getLogger(__name__)
 
@@ -257,6 +258,7 @@ def submit_form(form_name, form_data, user, request):
     submission_parcel["user_id"] = str(user.id)
     submission_parcel["server_env"] = os.environ.get("ENV", default="production")
     submission_parcel["session_id"] = request.session._get_or_create_session_key()
+    submission_parcel["user_agent"] = get_user_agent(request)
 
     try:
         f = requests.post(submission_endpoint, json=submission_parcel, headers=_headers)
