@@ -213,7 +213,7 @@ def get_summary_score(survey, score_fields, key="symptoms"):
     score = round(
         (
             sum(({k: survey[key][k] for k in survey[key] if k in score_fields}).values())
-            / score_max
+            / len(score_fields)
         ),
         1,
     )
