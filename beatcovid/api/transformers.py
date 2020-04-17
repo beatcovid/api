@@ -1,11 +1,14 @@
 import html
 import json
 import logging
+import re
 
 import markdown
 from django.utils.translation import get_language_from_request
 
 logger = logging.getLogger(__name__)
+
+__extract_iso_lang = re.compile("\(([a-z]{2})\)$")
 
 
 def _strip_outer_tags(s):
@@ -17,15 +20,14 @@ def _strip_outer_tags(s):
     return s[start:end]
 
 
-def parse_form_label(label):
-    if not label or len(label) < 1:
+def parse_form_label(labels, language_index=0):
+    if not labels or len(labels) < 1:
         return ""
 
-    if type(label) is not list:
-        label = [label]
+    if type(labels) is not list:
+        labels = [labels]
 
-    label = [str(i) for i in label if i]
-    label = [i for i in label if type(i) is str]
+    label = labels[language_index]
 
     _output = "".join(label).replace("\n", "")
 
@@ -40,7 +42,7 @@ def parse_form_label(label):
     return _output
 
 
-def _parse_question(si, choices, request):
+def _parse_question(si, choices, request, li):
     q = {"id": si["$kuid"]}
 
     mapped_fields = [
@@ -63,7 +65,7 @@ def _parse_question(si, choices, request):
             q[f] = si[f]
 
     if "label" in q:
-        q["label"] = parse_form_label(q["label"])
+        q["label"] = parse_form_label(q["label"], li)
 
     if "required" not in q:
         q["required"] = False
@@ -76,7 +78,11 @@ def _parse_question(si, choices, request):
     elif "select_from_list_name" in si:
         c = list(filter(lambda d: d["list_name"] == si["select_from_list_name"], choices))
         c = [
-            {"id": si["name"], "value": i["name"], "label": parse_form_label(i["label"]),}
+            {
+                "id": si["name"],
+                "value": i["name"],
+                "label": parse_form_label(i["label"], li),
+            }
             for i in c
         ]
         q["choices"] = c
@@ -117,6 +123,34 @@ def load_externs(list_name, request):
         return languages_top + languages
 
 
+def extract_iso_from_language(language_str):
+    m = __extract_iso_lang.search(language_str)
+    if m:
+        return m.group(1)
+
+    return None
+
+
+def get_language_index(languages, user_language, default_language="en"):
+    if not type(languages) is list:
+        languages = [languages]
+
+    index = 0
+    index_default = 0
+    found_user_language = False
+    language_isos = []
+
+    for l in languages:
+        schema_language_iso = extract_iso_from_language(l)
+        if schema_language_iso == user_language:
+            return index
+        if schema_language_iso == default_language:
+            index_default = index
+        index += 1
+
+    return index_default
+
+
 def parse_kobo_json(form_json, request, user, last_submission=None):
     """
         Takes JSON form output from KOBO and translates it into
@@ -127,19 +161,22 @@ def parse_kobo_json(form_json, request, user, last_submission=None):
 
         @TODO write unit tests
     """
+    if not user or not user.id:
+        logger.error("did not receive a user id when transforming form")
+
     _json = form_json
     choices = _json["content"]["choices"]
     survey = _json["content"]["survey"]
 
-    if not user or not user.id:
-        logger.error("did not receive a user id when transforming form")
+    # language / translation support
+    languages = _json["summary"]["languages"]
+    language_default = _json["summary"]["default_translation"]
+    language_default_code = extract_iso_from_language(language_default)
 
     user_language = get_language_from_request(request)
+    li = get_language_index(languages, user_language, language_default_code)
 
-    if user and user.id:
-        user_id = str(user.id)
-    else:
-        user_id = None
+    user_id = str(user.id)
 
     _output = {
         "uid": _json["uid"],
@@ -175,7 +212,7 @@ def parse_kobo_json(form_json, request, user, last_submission=None):
         if si["type"] == "begin_group" and not in_step:
             step = {"name": si["name"], "questions": []}
             if "label" in si:
-                step["label"] = parse_form_label(si["label"])
+                step["label"] = parse_form_label(si["label"], li)
             # q = {}
             in_step = True
         elif si["type"] == "end_group" and in_step:
@@ -184,14 +221,14 @@ def parse_kobo_json(form_json, request, user, last_submission=None):
         elif in_step:
             if "retain" in si:
                 retained.append(si["name"])
-            q = _parse_question(si, choices, request)
+            q = _parse_question(si, choices, request, li)
 
             if "name" in q and "label" in q:
-                _label_map[q["name"]] = q["label"]
+                _label_map[q["name"]] = parse_form_label(q["label"], li)
 
             step["questions"].append(q)
         else:
-            _global = _parse_question(si, choices, request)
+            _global = _parse_question(si, choices, request, li)
 
             if _global["name"] == "user_id" and user_id:
                 _global["calculation"] = user_id
