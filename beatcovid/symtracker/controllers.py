@@ -18,10 +18,7 @@ from beatcovid.api.controllers import (
 logger = logging.getLogger(__name__)
 
 
-FIXTURES_FILE = os.path.join(os.path.dirname(__file__), "fixtures", "symptom_tests.json")
-
 # use array index as index
-# @TODO eghhhhhhhhh
 HEALTH_WARNINGS = ["All is well", "Keep an eye on it", "Call your doctor"]
 
 HEALTH_TRIGGERS = [
@@ -83,6 +80,8 @@ daily_activities = [
 non_risk_symptoms = [s for s in all_symptoms if not s in risk_symptoms]
 
 risk_scores = list([i for i in string.ascii_uppercase[:6]])
+
+RISK_LABELS = []
 
 __is_number = re.compile("^\d+$")
 __is_single_number = re.compile("^\d$")
@@ -197,25 +196,6 @@ def parse_survey(survey):
 def get_label_for_field(field, schema):
     if not schema:
         return field
-
-    # if not "survey" in schema:
-    #     return field
-
-    # if not "steps" in schema["survey"]:
-    #     return field
-
-    # steps = schema["survey"]["steps"]
-
-    # _label_map = {}
-
-    # for step in steps:
-    #     for question in step["questions"]:
-    #         if "name" in question and "label" in question:
-    #             _label_map[question["name"]] = question["label"]
-    #         if "choices" in question:
-    #             for choice in question["choices"]:
-    #                 if "value" in choice and "label" in choice:
-    #                     _label_map[choice["value"]] = choice["label"]
 
     if field in schema["labels"]:
         return schema["labels"][field]
@@ -374,28 +354,4 @@ def get_user_report_from_survey(surveys, schema=None):
         "scores": _scores,
     }
 
-    # report["scores"]["main"] = {
-    #     get_label_for_field("symptom_" + sym, schema): get_value_label(
-    #         survey["symptom_" + sym]
-    #     )
-    #     for sym in risk_symptoms
-    # }
-
-    # report["scores"]["other"] = {
-    #     get_label_for_field("symptom_" + sym, schema): get_value_label(
-    #         survey["symptom_" + sym]
-    #     )
-    #     for sym in non_risk_symptoms
-    #     if "symptom_" + sym in survey
-    # }
-
-    # report["scores"]["activities"] = get_value_dict_for(survey_most_recent, "activity")
-    # report["scores"]["activities"] = get_value_dict_for(survey_most_recent, "activity")
-    # report["scores"]["activities"] = get_value_dict_for(survey_most_recent, "activity")
-
-    # report["scores"]["worries"] = get_value_dict_for(survey_most_recent, "worry")
-
-    from pprint import pprint
-
-    pprint(json.dumps(_parsed_survey_most_recent))
     return report
