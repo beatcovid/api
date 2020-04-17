@@ -24,7 +24,7 @@ def parse_form_label(label):
     if type(label) is not list:
         label = [label]
 
-    label = [str(i) for i in label]
+    label = [str(i) for i in label if i]
     label = [i for i in label if type(i) is str]
 
     _output = "".join(label).replace("\n", "")
