@@ -5,6 +5,8 @@ import re
 import string
 import sys
 
+from django.utils import dateparse
+
 from beatcovid.api.controllers import (
     get_form_schema,
     get_submission_data,
@@ -14,9 +16,6 @@ from beatcovid.api.controllers import (
 )
 
 logger = logging.getLogger(__name__)
-
-
-BASE_PATH = os.path.join(os.path.dirname(__file__), "fixtures")
 
 
 FIXTURES_FILE = os.path.join(os.path.dirname(__file__), "fixtures", "symptom_tests.json")
@@ -89,19 +88,6 @@ __is_number = re.compile("^\d+$")
 __is_single_number = re.compile("^\d$")
 
 
-def get_fixture(fixture_name):
-    fixture_file_name = os.path.join(BASE_PATH, f"{fixture_name}.json")
-    if not os.path.isfile(fixture_file_name):
-        raise Exception(f"Fixture {fixture_name} not found")
-
-    fixture = None
-
-    with open(fixture_file_name) as fh:
-        fixture = json.load(fh)
-
-    return fixture
-
-
 def is_number(value):
     if re.match(__is_number, value):
         return True
@@ -116,6 +102,9 @@ def is_single_number(value):
 
 def cast_value_strings(tag):
     """ strips those _0 numbers from the end of values"""
+    if type(tag) is dict:
+        logger.debug(tag)
+
     if type(tag) is str and "_" in tag:
         value, suffix = tag.split("_", 1)
         if is_single_number(suffix):
@@ -131,7 +120,7 @@ def get_value_label(tag):
     return tag
 
 
-def cast_bool_strings(tag):
+def cast_strings_to_bool(tag):
     if not type(tag) is str:
         return tag
 
@@ -145,11 +134,11 @@ def cast_bool_strings(tag):
 
 
 def get_user_report(user, request):
-    survey = get_user_submissions("beatcovid19now", user)
+    surveys = get_user_submissions("beatcovid19now", user)
     schema = get_form_schema("beatcovid19now", request, user)
 
-    if survey and type(survey) is list:
-        return get_user_report_from_survey(survey[0], schema)
+    if surveys and type(surveys) is list:
+        return get_user_report_from_survey(surveys, schema)
 
     return None
 
@@ -168,7 +157,7 @@ def parse_survey(survey):
 
     for field in survey.keys():
         value = cast_value_strings(survey[field])
-        value = cast_bool_strings(value)
+        value = cast_strings_to_bool(value)
 
         if field.startswith("symptom_"):
             _, symptom = field.split("_", 1)
@@ -195,7 +184,7 @@ def parse_survey(survey):
             survey_out[field] = value
 
     survey_out["symptoms"] = symptoms
-    survey_out["activities"] = activities
+    survey_out["activity"] = activities
     survey_out["worry"] = worry
     survey_out["user_detail"] = userdetails
     survey_out["face_contact_details"] = face_contact
@@ -209,211 +198,199 @@ def get_label_for_field(field, schema):
     if not schema:
         return field
 
-    if not "survey" in schema:
-        return field
+    # if not "survey" in schema:
+    #     return field
 
-    if not "steps" in schema["survey"]:
-        return field
+    # if not "steps" in schema["survey"]:
+    #     return field
 
-    steps = schema["survey"]["steps"]
+    # steps = schema["survey"]["steps"]
 
-    _label_map = {}
+    # _label_map = {}
 
-    for step in steps:
-        for question in step["questions"]:
-            if "name" in question and "label" in question:
-                _label_map[question["name"]] = question["label"]
-            if "choices" in question:
-                for choice in question["choices"]:
-                    if "value" in choice and "label" in choice:
-                        _label_map[choice["value"]] = choice["label"]
+    # for step in steps:
+    #     for question in step["questions"]:
+    #         if "name" in question and "label" in question:
+    #             _label_map[question["name"]] = question["label"]
+    #         if "choices" in question:
+    #             for choice in question["choices"]:
+    #                 if "value" in choice and "label" in choice:
+    #                     _label_map[choice["value"]] = choice["label"]
 
-    if field in _label_map:
-        return _label_map[field]
+    if field in schema["labels"]:
+        return schema["labels"][field]
 
     return field
 
 
-def get_user_report_from_survey(survey, schema=None):
+def get_summary_score(survey, score_fields, key="symptoms"):
 
-    # invalid survey 3 is a bit arbitary
-    if len(survey.keys()) < 3:
-        return {}
+    # for now the max score is just the number of fields
+    score_max = len(score_fields)
 
+    # for now score is just average of the fields
+    score = round(
+        (
+            sum(({k: survey[key][k] for k in survey[key] if k in score_fields}).values())
+            / score_max
+        ),
+        1,
+    )
+
+    return {"value": score, "max": score_max}
+
+
+def get_value_dict_for(survey, schema, label):
     _parsed_survey = parse_survey(survey)
 
-    respirotary_problem_score = sum(
-        (
-            {
-                k: _parsed_survey["symptoms"][k]
-                for k in _parsed_survey["symptoms"]
-                if k in respiratory_problems
-            }
-        ).values()
-    ) / len(respiratory_problems)
+    # logger.debug(label)
+    # logger.debug(survey)
+    logger.debug(_parsed_survey)
 
-    general_sym_score = sum(
-        (
-            {
-                k: _parsed_survey["symptoms"][k]
-                for k in _parsed_survey["symptoms"]
-                if k in general_symptoms
-            }
-        ).values()
-    ) / len(general_symptoms)
+    if not label in _parsed_survey:
+        return {}
 
-    activity_score = sum(
-        (
-            {
-                k: _parsed_survey["symptoms"][k]
-                for k in _parsed_survey["symptoms"]
-                if k in daily_activities
-            }
-        ).values()
-    ) / len(daily_activities)
-
-    risk_symptom_values = {
-        k: _parsed_survey["symptoms"][k]
-        for k in _parsed_survey["symptoms"]
-        if k in risk_symptoms
+    return {
+        get_label_for_field(label + "_" + sym, schema): get_value_label(
+            survey[label + "_" + sym]
+        )
+        for sym in _parsed_survey[label].keys()
+        if sym in _parsed_survey[label]
     }
 
-    risk_symptom_score = sum((risk_symptom_values).values())
 
-    risk_number = 0
+def get_value_dict_subset_for(survey, schema, symptom_list):
+    return {
+        get_label_for_field("symptom_" + sym, schema): get_value_label(
+            survey["symptom_" + sym]
+        )
+        for sym in symptom_list
+        if "symptom_" + sym in survey
+    }
 
-    contact_score = False
-    if survey["contact"] in ["yes", "yes_suspected"]:
-        contact_score = True
 
-    contact_close_score = False
-    if "contact_type" in survey and survey["contact_type"] in [
+def get_risk_score(survey, has_travel, has_contact, has_contact_close):
+    risk_score = 0
+
+    if has_travel:
+        risk_score += 1
+
+    if has_contact:
+        risk_score += 1
+
+    if has_contact_close:
+        risk_score += 1
+
+    if survey["symptoms"]["nobreath"] >= 2:
+        risk_score += 2
+
+    if risk_score >= len(risk_scores):
+        risk_score = len(risk_scores) - 1
+
+    return risk_scores[risk_score]
+
+
+def get_user_report_from_survey(surveys, schema=None):
+    survey_most_recent = surveys[0]
+    _parsed_survey_most_recent = parse_survey(survey_most_recent)
+
+    # invalid survey 3 is a bit arbitary
+    if len(survey_most_recent.keys()) < 3:
+        return {}
+
+    _scores = []
+    have_dates = []
+
+    for s in surveys:
+        _parsed_survey = parse_survey(s)
+
+        # summary scores
+        respirotary_problem_score = get_summary_score(
+            _parsed_survey, respiratory_problems
+        )
+        general_symptom_score = get_summary_score(_parsed_survey, general_symptoms)
+        activity_score = get_summary_score(
+            _parsed_survey, daily_activities, key="activity"
+        )
+
+        # list of return values
+        _score_summary = {
+            "respiratory": respirotary_problem_score,
+            "general": general_symptom_score,
+            "activity": activity_score,
+        }
+
+        _score = {
+            "summary": _score_summary,
+            "main": get_value_dict_subset_for(s, schema, risk_symptoms),
+            "other": get_value_dict_subset_for(s, schema, non_risk_symptoms),
+            "activities": get_value_dict_for(s, schema, "activity"),
+            "worries": get_value_dict_for(s, schema, "worry"),
+        }
+
+        survey_date = None
+        if "start" in _parsed_survey:
+            survey_date = dateparse.parse_datetime("2020-04-17T07:08:27.572Z").strftime(
+                "%d-%m-%Y"
+            )
+            have_dates.append(survey_date)
+
+            _score["date"] = survey_date
+            _scores.append(_score)
+
+    has_contact = survey_most_recent["contact"] in ["yes", "yes_suspected"]
+
+    has_contact_close = "contact_type" in survey_most_recent and survey_most_recent[
+        "contact_type"
+    ] in [
         "contact_long",
         "close_long",
         "share_long",
         "contact_presymptomatic",
         "contact_work",
-    ]:
-        contact_close_score = True
+    ]
 
-    travel_score = False
-    if "travel" in survey and survey["travel"] == "yes":
-        traven_score = True
-
-    level = ""
-    total_participants = get_survey_user_count()
-
-    # calculate risk score
-    risk_score = 0
-
-    risky_symptom_scores_greater_than = len(
-        [v for k, v in risk_symptom_values.items() if v >= 2]
-    )
-
-    if travel_score:
-        risk_score += 1
-
-    if contact_score:
-        risk_score += 1
-
-    if contact_close_score:
-        risk_score += 1
-
-    if _parsed_survey["symptoms"]["nobreath"] >= 2:
-        risk_score += 2
-
-    if risky_symptom_scores_greater_than:
-        risk_score += 1
-
-    if risky_symptom_scores_greater_than > 2:
-        risk_score += 1
-
-    if risk_score >= len(risk_scores):
-        risk_score = len(risk_scores) - 1
-
-    if "_submission_time" in survey:
-        submission_time = survey["_submission_time"]
-    else:
-        submission_time = None
+    has_travel = "travel" in survey_most_recent and survey_most_recent["travel"] == "yes"
 
     report = {
         "level": "",
         "message": "",
-        "risk": risk_scores[risk_score],
-        "travel": travel_score,
-        "contact": contact_score,
-        "contact_close": contact_close_score,
-        "schema_version": survey["version"],
-        "date_started": survey["start"],
-        "date_submitted": submission_time,
+        "risk": get_risk_score(
+            _parsed_survey_most_recent, has_travel, has_contact, has_contact_close
+        ),
+        "travel": has_travel,
+        "contact": has_contact,
+        "contact_close": has_contact_close,
+        "schema_version": survey_most_recent["version"],
+        "date_started": survey_most_recent["start"],
+        "date_submitted": survey_most_recent["end"],
         "app_version": "1.1.0",
-        "total_participants": total_participants,
-        "scores": {
-            "summary": {
-                "respiratory": {
-                    "value": round(respirotary_problem_score, 1),
-                    "max": len(respiratory_problems),
-                },
-                "general": {
-                    "value": round(general_sym_score, 1),
-                    "max": len(general_symptoms),
-                },
-                "activity": {
-                    "value": round(activity_score, 1),
-                    "max": len(daily_activities),
-                },
-            }
-        },
+        "total_participants": get_survey_user_count(),
+        "scores": _scores,
     }
 
-    report["scores"]["main"] = {
-        get_label_for_field("symptom_" + sym, schema): get_value_label(
-            survey["symptom_" + sym]
-        )
-        for sym in risk_symptoms
-    }
+    # report["scores"]["main"] = {
+    #     get_label_for_field("symptom_" + sym, schema): get_value_label(
+    #         survey["symptom_" + sym]
+    #     )
+    #     for sym in risk_symptoms
+    # }
 
-    report["scores"]["other"] = {
-        get_label_for_field("symptom_" + sym, schema): get_value_label(
-            survey["symptom_" + sym]
-        )
-        for sym in non_risk_symptoms
-        if "symptom_" + sym in survey
-    }
+    # report["scores"]["other"] = {
+    #     get_label_for_field("symptom_" + sym, schema): get_value_label(
+    #         survey["symptom_" + sym]
+    #     )
+    #     for sym in non_risk_symptoms
+    #     if "symptom_" + sym in survey
+    # }
 
-    report["scores"]["activities"] = {
-        get_label_for_field("activity_" + sym, schema): get_value_label(
-            survey["activity_" + sym]
-        )
-        for sym in daily_activities
-        if "activity_" + sym in survey
-    }
+    # report["scores"]["activities"] = get_value_dict_for(survey_most_recent, "activity")
+    # report["scores"]["activities"] = get_value_dict_for(survey_most_recent, "activity")
+    # report["scores"]["activities"] = get_value_dict_for(survey_most_recent, "activity")
 
-    report["scores"]["worries"] = {
-        get_label_for_field("worry_" + sym, schema): get_value_label(
-            survey["worry_" + sym]
-        )
-        for sym in _parsed_survey["worry"].keys()
-        if "worry_" + sym in survey
-    }
+    # report["scores"]["worries"] = get_value_dict_for(survey_most_recent, "worry")
 
+    from pprint import pprint
+
+    pprint(json.dumps(_parsed_survey_most_recent))
     return report
-
-
-def get_user_symptoms(user=None):
-    submissions = []
-
-    if not os.path.isfile(FIXTURES_FILE):
-        submissions = get_user_submissions("beatcovid19now", user)
-        with open(FIXTURES_FILE, "w") as fh:
-            json.dump(submissions, fh)
-
-    if not len(submissions):
-        with open(FIXTURES_FILE) as fh:
-            submissions = json.load(fh)
-
-    logger.debug(submissions)
-
-    tracker = {"submissions": submissions}
-
-    return tracker
