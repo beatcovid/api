@@ -226,7 +226,8 @@ def get_label_for_field(field, schema):
 def get_summary_score(survey, score_fields, key="symptoms"):
 
     # for now the max score is just the number of fields
-    score_max = len(score_fields)
+    # score_max = len(score_fields)
+    score_max = 3
 
     # for now score is just average of the fields
     score = round(
@@ -338,7 +339,11 @@ def get_user_report_from_survey(surveys, schema=None):
             _score["date"] = survey_date
             _scores.append(_score)
 
-    has_contact = survey_most_recent["contact"] in ["yes", "yes_suspected"]
+    has_contact = survey_most_recent["contact"] in [
+        "yes",
+        "yes_suspected",
+        "yes_confirmed",
+    ]
 
     has_contact_close = "contact_type" in survey_most_recent and survey_most_recent[
         "contact_type"
