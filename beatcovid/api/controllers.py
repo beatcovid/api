@@ -2,9 +2,11 @@ import json
 import logging
 import os
 import uuid
+from datetime import datetime
 
 import requests
 from django.conf import settings
+from django.utils.translation import get_language_from_request
 
 from .transformers import parse_kobo_json
 from .utils import get_user_agent
@@ -273,6 +275,9 @@ def submit_form(form_name, form_data, user, request):
     submission_parcel["meta"] = {"instanceID": f"uuid:{_uuid}"}
 
     _submit_form_data["user_id"] = str(user.id)
+    _submit_form_data["language"] = get_language_from_request(request)
+    _submit_form_data["end"] = str(datetime.now().isoformat())
+    _submit_form_data["version"] = "1.1.0"  # @TODO read this from pyproject.toml
     _submit_form_data["server_env"] = os.environ.get("ENV", default="production")
     _submit_form_data["session_id"] = request.session._get_or_create_session_key()
     _submit_form_data["user_agent"] = get_user_agent(request)
