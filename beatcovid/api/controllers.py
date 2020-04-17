@@ -277,7 +277,7 @@ def submit_form(form_name, form_data, user, request):
     _submit_form_data["user_id"] = str(user.id)
     _submit_form_data["language"] = get_language_from_request(request)
     _submit_form_data["end"] = str(datetime.now().isoformat())
-    _submit_form_data["version"] = "1.1.0"  # @TODO read this from pyproject.toml
+    _submit_form_data["server_version"] = "1.1.0"  # @TODO read this from pyproject.toml
     _submit_form_data["server_env"] = os.environ.get("ENV", default="production")
     _submit_form_data["session_id"] = request.session._get_or_create_session_key()
     _submit_form_data["user_agent"] = get_user_agent(request)
