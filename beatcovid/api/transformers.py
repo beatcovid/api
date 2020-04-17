@@ -18,8 +18,14 @@ def _strip_outer_tags(s):
 
 
 def parse_form_label(label):
+    if not label or len(label) < 1:
+        return ""
+
     if type(label) is not list:
         label = [label]
+
+    label = [str(i) for i in label]
+    label = [i for i in label if type(i) is str]
 
     _output = "".join(label).replace("\n", "")
 
