@@ -271,10 +271,11 @@ def submit_form(form_name, form_data, user, request):
     }
 
     submission_parcel["meta"] = {"instanceID": f"uuid:{_uuid}"}
-    submission_parcel["user_id"] = str(user.id)
-    submission_parcel["server_env"] = os.environ.get("ENV", default="production")
-    submission_parcel["session_id"] = request.session._get_or_create_session_key()
-    submission_parcel["user_agent"] = get_user_agent(request)
+
+    _submit_form_data["user_id"] = str(user.id)
+    _submit_form_data["server_env"] = os.environ.get("ENV", default="production")
+    _submit_form_data["session_id"] = request.session._get_or_create_session_key()
+    _submit_form_data["user_agent"] = get_user_agent(request)
 
     try:
         f = requests.post(submission_endpoint, json=submission_parcel, headers=_headers)
