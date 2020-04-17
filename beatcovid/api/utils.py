@@ -17,4 +17,4 @@ def get_user_agent(request):
     if "os" in ua_parsed:
         ret["os"] = ua_parsed["os"]
 
-    return ret
+    return ua
