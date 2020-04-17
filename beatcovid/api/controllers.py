@@ -252,9 +252,22 @@ def submit_form(form_name, form_data, user, request):
     # filter out the __ fields which are usually labels
     form_data = {k: v for k, v in form_data.items() if not k.startswith("__")}
 
+    _submit_form_data = {}
+
+    # transform geo fields so place id is primary key
+    for field, value in form_data.items():
+        if "geo" in value:
+            geo = value["geo"]
+            _submit_form_data[field] = geo["place_id"]
+            _submit_form_data[field + "_label"] = geo["formatted_address"]
+            _submit_form_data[field + "_lat"] = geo["geometry"]["location"]["lat"]
+            _submit_form_data[field + "_lng"] = geo["geometry"]["location"]["lng"]
+        else:
+            _submit_form_data[field] = value
+
     submission_parcel = {
         "id": formid,
-        "submission": form_data,
+        "submission": _submit_form_data,
     }
 
     submission_parcel["meta"] = {"instanceID": f"uuid:{_uuid}"}
