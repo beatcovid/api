@@ -346,10 +346,20 @@ def get_submission_data(form_name, query, limit=None, count=None, sort=None):
         logger.error(e)
         return None
 
-    # @TODO catch JSON parsing errors (the server can? something throw back HTML)
-    server_response = f.json()
+    _resp = None
 
-    return server_response
+    try:
+        _resp = f.json()
+    except Exception as e:
+        logger.error("Error parsing response JSON %s".format(e))
+        return False
+
+    if not type(_resp) is list:
+        _resp = []
+
+    _resp = [{k: v for k, v in i.items() if not k.startswith("_")} for i in _resp]
+
+    return _resp
 
 
 def kobocat_transform_transport(record):
