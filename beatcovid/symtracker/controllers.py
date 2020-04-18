@@ -277,10 +277,6 @@ def get_summary_score(survey, score_fields, key="symptoms"):
 def get_value_dict_for(survey, schema, label):
     _parsed_survey = parse_survey(survey)
 
-    # logger.debug(label)
-    # logger.debug(survey)
-    logger.debug(_parsed_survey)
-
     if not label in _parsed_survey:
         return {}
 
