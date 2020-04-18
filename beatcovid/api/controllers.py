@@ -1,3 +1,4 @@
+import collections
 import json
 import logging
 import os
@@ -154,7 +155,7 @@ def get_user_last_submission(form_name, user):
         return None
 
     if len(result) > 0:
-        return result[0]
+        return collections.OrderedDict(sorted(result[0].items()))
 
     return None
 
@@ -170,6 +171,11 @@ def get_user_submissions(form_name, user):
     if not type(results) is list:
         logger.debug(f"No submissions for user: {user.id}")
         return None
+
+    sorted_results = []
+
+    for s in results:
+        sorted_results.append(collections.OrderedDict(sorted(s.items())))
 
     return results
 
