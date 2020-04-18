@@ -81,7 +81,60 @@ non_risk_symptoms = [s for s in all_symptoms if not s in risk_symptoms]
 
 risk_scores = list([i for i in string.ascii_uppercase[:6]])
 
-RISK_LABELS = []
+RISK_HEADER = (
+    "<h2>Your results today based on the<br>Australian Government recommendations</h2>"
+)
+
+RISK_FOOTER = "For up-to-date information follow your national COVID-19 guidelines or look at 'Advice for public' on the <a href='https://www.who.int/emergencies/diseases/novel-coronavirus-2019/advice-for-public' target='_blank'>WHO website</a>."
+
+RISK_LABELS = {
+    "A": [
+        RISK_HEADER,
+        "Report: No or mild symptoms, no recent travel or exposure",
+        "Please continue to monitor your wellbeing and complete the Tracker each day.",
+        RISK_FOOTER,
+    ],
+    "B": [
+        RISK_HEADER,
+        "Report: You reported that you have mild, moderate or severe symptoms and no recent travel or exposure.",
+        "Please continue to monitor your symptoms and complete the Tracker each day. If you have serious symptoms such as difficulty breathing, call  your emergency line for urgent medical help. If you would like to talk to someone about your symptoms, contact your local COVID-19 Health Information Line.",
+        RISK_FOOTER,
+    ],
+    "C": [
+        RISK_HEADER,
+        "Report: You reported that you may have symptoms including shortness of breath (moderate or severe), with no recent travel or exposure.",
+        "If you have serious symptoms such as difficulty breathing, call your emergency line for urgent medical help.  If you would like to talk to someone about your symptoms, contact your local COVID-19 Health Information Line. Please continue to monitor your symptoms and complete the Tracker each day.",
+        RISK_FOOTER,
+    ],
+    "D": [
+        RISK_HEADER,
+        "Report: You reported that you have moderate to severe symptoms and recent travel or exposure.",
+        "Contact your local health authority and/or your medical practitioner immediately. If you have serious symptoms such as difficulty breathing, call your emergency line for urgent medical help. Please continue to monitor your symptoms and complete the Tracker each day.",
+        RISK_FOOTER,
+    ],
+    "E": [
+        RISK_HEADER,
+        "Report: You reported that you have none or mild symptoms and recent travel or exposure.",
+        "Follow the advice about isolation and monitoring your health provided to you by your local health authority. Please, continue to monitor your symptoms and complete the Tracker each day.",
+        "If you experience worsening symptoms such as difficulty breathing, please seek urgent medical help and make sure you let the health service know that you have recently returned from travel or had exposure to a confirmed or suspected case of COVID-19.",
+        RISK_FOOTER,
+    ],
+    "F": [
+        RISK_HEADER,
+        "You have reported a positive COVID-19 test result or are awaiting your test results.",
+        "Follow the advice about isolation and monitoring your health provided to you by your local health authority. Please, continue to monitor your symptoms and complete the Tracker each day.",
+        "If you experience worsening symptoms such as difficulty breathing, please seek urgent medical help and make sure you let the health service know that you have tested positive for COVID-19.",
+        "For up-to-date information follow your national COVID-19 guidelines or look at ‘Advice for public’ on <a href='https://www.who.int/emergencies/diseases/novel-coronavirus-2019/advice-for-public'>the WHO website</a>",
+    ],
+    "FWAITING": [
+        RISK_HEADER,
+        "You have reported you are awaiting your test results. ",
+        "Follow the advice about isolation and monitoring your health provided to you by your local health authority. Please, continue to monitor your symptoms and complete the Tracker each day.",
+        "If you experience worsening symptoms such as difficulty breathing, please seek urgent medical help and make sure you let the health service know that you are awaiting your test results.",
+        "For up-to-date information follow your national COVID-19 guidelines or look at ‘Advice for public’ on <a href='https://www.who.int/emergencies/diseases/novel-coronavirus-2019/advice-for-public'>the WHO website</a>",
+    ],
+}
+
 
 __is_number = re.compile("^\d+$")
 __is_single_number = re.compile("^\d$")
@@ -252,6 +305,8 @@ def get_value_dict_subset_for(survey, schema, symptom_list):
 
 def get_risk_score(survey, has_travel, has_contact, has_contact_close):
     risk_score = 0
+    # risk_score = "A"
+    risk_label = None
 
     if has_travel:
         risk_score += 1
@@ -268,7 +323,10 @@ def get_risk_score(survey, has_travel, has_contact, has_contact_close):
     if risk_score >= len(risk_scores):
         risk_score = len(risk_scores) - 1
 
-    return risk_scores[risk_score]
+    if not risk_label:
+        risk_label = risk_scores[risk_score]
+
+    return {"score": risk_scores[risk_score], "label": RISK_LABELS[risk_label]}
 
 
 def get_user_report_from_survey(surveys, schema=None):
