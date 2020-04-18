@@ -6,10 +6,13 @@ import sys
 
 from django.utils import dateparse
 
-from beatcovid.api.controllers import (get_form_schema, get_submission_data,
-                                       get_survey_user_count,
-                                       get_user_last_submission,
-                                       get_user_submissions)
+from beatcovid.api.controllers import (
+    get_form_schema,
+    get_submission_data,
+    get_survey_user_count,
+    get_user_last_submission,
+    get_user_submissions,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -309,6 +312,15 @@ def get_risk_score(survey, has_travel, has_contact, has_contact_close):
     ]
     risk_symptoms_has_mod_or_severe = len(risk_symptoms_mod_or_severe)
 
+    risk_symptoms_none_or_mild = [
+        i
+        for i in (
+            {k: survey["symptoms"][k] for k in survey["symptoms"] if k in risk_symptoms}
+        ).values()
+        if i <= 1
+    ]
+    risk_symptoms_has_none_or_mild = len(risk_symptoms_none_or_mild)
+
     if symptom_score > 0 and not has_contact and not has_travel:
         risk_score = "B"
 
@@ -318,7 +330,7 @@ def get_risk_score(survey, has_travel, has_contact, has_contact_close):
     elif risk_symptoms_has_mod_or_severe and (has_close_contact or has_travel):
         risk_score = "D"
 
-    elif risk_symptom_score > 0 and (has_contact or has_travel):
+    elif risk_symptoms_has_none_or_mild and (has_contact or has_travel):
         risk_score = "E"
 
     elif survey["test_result"] == "positive":
