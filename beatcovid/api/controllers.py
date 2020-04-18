@@ -264,7 +264,7 @@ def submit_form(form_name, form_data, user, request):
 
     # transform geo fields so place id is primary key
     for field, value in form_data.items():
-        if "geo" in value:
+        if type(value) is dict and "geo" in value:
             geo = value["geo"]
             _submit_form_data[field] = geo["place_id"]
             _submit_form_data[field + "_label"] = geo["formatted_address"]
