@@ -118,7 +118,7 @@ def load_externs(list_name, request):
                     {"id": "languages", "value": l.iso_639_1, "label": l.name_en}
                 )
 
-        languages_top.append({"id": "languages", "value": None, "label": "-----------"})
+        languages_top.append({"id": "languages", "value": None, "label": "--"})
 
         return languages_top + languages
 
