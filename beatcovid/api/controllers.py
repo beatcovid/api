@@ -296,8 +296,6 @@ def submit_form(form_name, form_data, user, request):
 
     server_response = f.json()
 
-    logger.debug(server_response)
-
     return server_response
 
 
