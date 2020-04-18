@@ -205,7 +205,10 @@ def parse_kobo_json(form_json, request, user, last_submission=None):
     step = {"questions": []}
     _globals = []
     _global = {}
-    _label_map = {}
+
+    # @TODO translate here too
+    _label_map = {k["name"]: k["label"][0] for k in choices}
+
     in_step = False
     q = {}
     for si in survey:
