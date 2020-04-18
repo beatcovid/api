@@ -408,7 +408,7 @@ def get_user_report_from_survey(surveys, schema=None):
             "level": "",
             "message": "",
             "risk": get_risk_score(
-                _parsed_survey_most_recent, has_travel, has_contact, has_contact_close,
+                _parsed_survey, has_travel, has_contact, has_contact_close,
             ),
             "travel": has_travel,
             "contact": has_contact,
