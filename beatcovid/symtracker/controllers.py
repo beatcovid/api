@@ -303,13 +303,22 @@ def get_risk_score(survey, has_travel, has_contact, has_contact_close):
     symptom_score = get_summary_score(survey, general_symptoms)["value"]
     risk_symptom_score = get_summary_score(survey, risk_symptoms)["value"]
 
+    risk_symptoms_mod_or_severe = [
+        i
+        for i in (
+            {k: survey["symptoms"][k] for k in survey["symptoms"] if k in risk_symptoms}
+        ).values()
+        if i > 1
+    ]
+    risk_symptoms_has_mod_or_severe = len(risk_symptoms_mod_or_severe)
+
     if symptom_score > 0 and not has_contact and not has_travel:
         risk_score = "B"
 
-    elif risk_symptom_score > 0 and not has_contact and not has_travel:
+    elif risk_symptoms_has_mod_or_severe and (not has_close_contact and not has_travel):
         risk_score = "C"
 
-    elif symptom_score > 0 and (has_contact or has_travel):
+    elif risk_symptoms_has_mod_or_severe and (has_close_contact or has_travel):
         risk_score = "D"
 
     elif risk_symptom_score > 0 and (has_contact or has_travel):
