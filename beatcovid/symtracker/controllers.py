@@ -333,6 +333,9 @@ def get_user_report_from_survey(surveys, schema=None):
             "worries": get_value_dict_for(s, schema, "worry"),
         }
 
+        if "version" in _parsed_survey:
+            _score["version"] = _parsed_survey["version"]
+
         survey_date = None
         if "start" in _parsed_survey:
             survey_date = dateparse.parse_datetime("2020-04-17T07:08:27.572Z").strftime(
@@ -340,10 +343,10 @@ def get_user_report_from_survey(surveys, schema=None):
             )
 
             _score["date_day"] = survey_date
-            _score["date"] = _parsed_survey["start"]
+            _score["date_started"] = _parsed_survey["start"]
 
             if "end" in _parsed_survey:
-                _score["date_end"] = _parsed_survey["end"]
+                _score["date_submitted"] = _parsed_survey["end"]
 
             if "timezone" in _parsed_survey:
                 _score["timezone"] = _parsed_survey["timezone"]
