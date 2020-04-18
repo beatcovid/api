@@ -284,6 +284,26 @@ def get_user_report_from_survey(surveys, schema=None):
     for s in surveys:
         _parsed_survey = parse_survey(s)
 
+        has_contact = survey_most_recent["contact"] in [
+            "yes",
+            "yes_suspected",
+            "yes_confirmed",
+        ]
+
+        has_contact_close = "contact_type" in survey_most_recent and survey_most_recent[
+            "contact_type"
+        ] in [
+            "contact_long",
+            "close_long",
+            "share_long",
+            "contact_presymptomatic",
+            "contact_work",
+        ]
+
+        has_travel = (
+            "travel" in survey_most_recent and survey_most_recent["travel"] == "yes"
+        )
+
         # summary scores
         respirotary_problem_score = get_summary_score(
             _parsed_survey, respiratory_problems
@@ -301,6 +321,11 @@ def get_user_report_from_survey(surveys, schema=None):
         }
 
         _score = {
+            "level": "",
+            "message": "",
+            "risk": get_risk_score(
+                _parsed_survey_most_recent, has_travel, has_contact, has_contact_close
+            ),
             "summary": _score_summary,
             "main": get_value_dict_subset_for(s, schema, risk_symptoms),
             "other": get_value_dict_subset_for(s, schema, non_risk_symptoms),
