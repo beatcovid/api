@@ -45,6 +45,12 @@ def get_submission_count_base():
     return 0
 
 
+def get_respondent_count_base():
+    if settings.RESPONDENT_COUNT_BASE:
+        return settings.RESPONDENT_COUNT_BASE
+    return 0
+
+
 def get_server_form_by_name(form_name):
     """
         Get list of forms from server
@@ -302,10 +308,12 @@ def submit_form(form_name, form_data, user, request):
 def get_survey_user_count(form_name="beatcovid19now"):
     q = get_submission_data(form_name, query={}, count=1)
 
-    if "count" in q:
-        return q["count"]
+    respondent_count_base = get_respondent_count_base()
 
-    return 0
+    if "count" in q:
+        return int(q["count"]) + respondent_count_base
+
+    return 0 + respondent_count_base
 
 
 def get_submission_data(form_name, query, limit=None, count=None, sort=None):
