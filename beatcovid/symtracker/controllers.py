@@ -296,7 +296,7 @@ def get_value_dict_subset_for(survey, schema, symptom_list):
     }
 
 
-def get_risk_score(survey, has_travel, has_contact, has_contact_close):
+def get_risk_score(survey, has_travel, has_contact):
     risk_score = "A"
     risk_label = None
 
@@ -324,10 +324,10 @@ def get_risk_score(survey, has_travel, has_contact, has_contact_close):
     if symptom_score > 0 and not has_contact and not has_travel:
         risk_score = "B"
 
-    elif risk_symptoms_has_mod_or_severe and (not has_close_contact and not has_travel):
+    elif risk_symptoms_has_mod_or_severe and (not has_contact and not has_travel):
         risk_score = "C"
 
-    elif risk_symptoms_has_mod_or_severe and (has_close_contact or has_travel):
+    elif risk_symptoms_has_mod_or_severe and (has_contact or has_travel):
         risk_score = "D"
 
     elif risk_symptoms_has_none_or_mild and (has_contact or has_travel):
@@ -368,19 +368,15 @@ def get_user_report_from_survey(surveys, schema=None):
 
         has_contact = survey_most_recent["contact"] in [
             "yes",
-            "yes_suspected",
+            "yes_suspect",
             "yes_confirmed",
         ]
 
-        has_contact_close = "contact_type" in survey_most_recent and survey_most_recent[
-            "contact_type"
-        ] in [
-            "contact_long",
-            "close_long",
-            "share_long",
-            "contact_presymptomatic",
-            "contact_work",
-        ]
+        has_contact_close = False
+        if has_contact and "contact_type" in survey_most_recent:
+            has_contact_close = get_label_for_field(
+                survey_most_recent["contact_type"], schema
+            )
 
         has_travel = (
             "travel" in survey_most_recent and survey_most_recent["travel"] == "yes"
@@ -407,9 +403,7 @@ def get_user_report_from_survey(surveys, schema=None):
         _score = {
             "level": "",
             "message": "",
-            "risk": get_risk_score(
-                _parsed_survey, has_travel, has_contact, has_contact_close,
-            ),
+            "risk": get_risk_score(_parsed_survey, has_travel, has_contact,),
             "travel": has_travel,
             "contact": has_contact,
             "contact_close": has_contact_close,
@@ -440,33 +434,7 @@ def get_user_report_from_survey(surveys, schema=None):
 
             _scores.append(_score)
 
-    has_contact = survey_most_recent["contact"] in [
-        "yes",
-        "yes_suspected",
-        "yes_confirmed",
-    ]
-
-    has_contact_close = "contact_type" in survey_most_recent and survey_most_recent[
-        "contact_type"
-    ] in [
-        "contact_long",
-        "close_long",
-        "share_long",
-        "contact_presymptomatic",
-        "contact_work",
-    ]
-
-    has_travel = "travel" in survey_most_recent and survey_most_recent["travel"] == "yes"
-
     report = {
-        "level": "",
-        "message": "",
-        "risk": get_risk_score(
-            _parsed_survey_most_recent, has_travel, has_contact, has_contact_close
-        ),
-        "travel": has_travel,
-        "contact": has_contact,
-        "contact_close": has_contact_close,
         "schema_version": survey_most_recent["version"],
         "date_started": survey_most_recent["start"],
         "date_submitted": survey_most_recent["end"],
@@ -475,5 +443,7 @@ def get_user_report_from_survey(surveys, schema=None):
         "respondents_total": get_survey_user_count(),
         "scores": _scores,
     }
+
+    report.update(_scores[0])
 
     return report
