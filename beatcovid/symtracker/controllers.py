@@ -333,10 +333,10 @@ def get_risk_score(survey, has_travel, has_contact, has_contact_close):
     elif risk_symptoms_has_none_or_mild and (has_contact or has_travel):
         risk_score = "E"
 
-    elif survey["test_result"] == "positive":
+    elif "test_results" in survey and survey["test_result"] == "positive":
         risk_score = "F"
 
-    elif survey["test_result"] == "waiting":
+    elif "test_results" in survey and survey["test_result"] == "waiting":
         risk_score = "F"
         risk_label = "FWAITING"
 
