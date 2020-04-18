@@ -2,7 +2,6 @@ import json
 import logging
 import os
 import re
-import string
 import sys
 
 from django.utils import dateparse
@@ -78,8 +77,6 @@ daily_activities = [
 ]
 
 non_risk_symptoms = [s for s in all_symptoms if not s in risk_symptoms]
-
-risk_scores = list([i for i in string.ascii_uppercase[:6]])
 
 RISK_HEADER = (
     "<h2>Your results today based on the<br>Australian Government recommendations</h2>"
@@ -300,29 +297,42 @@ def get_value_dict_subset_for(survey, schema, symptom_list):
 
 
 def get_risk_score(survey, has_travel, has_contact, has_contact_close):
-    risk_score = 0
-    # risk_score = "A"
+    risk_score = "A"
     risk_label = None
 
-    if has_travel:
-        risk_score += 1
+    symptom_score = get_summary_score(survey, general_symptoms)["value"]
+    risk_symptom_score = get_summary_score(survey, risk_symptoms)["value"]
 
-    if has_contact:
-        risk_score += 1
+    if symptom_score > 0 and not has_contact and not has_travel:
+        risk_score = "B"
 
-    if has_contact_close:
-        risk_score += 1
+    elif risk_symptom_score > 0 and not has_contact and not has_travel:
+        risk_score = "C"
 
-    if survey["symptoms"]["nobreath"] >= 2:
-        risk_score += 2
+    elif symptom_score > 0 and (has_contact or has_travel):
+        risk_score = "D"
 
-    if risk_score >= len(risk_scores):
-        risk_score = len(risk_scores) - 1
+    elif risk_symptom_score > 0 and (has_contact or has_travel):
+        risk_score = "E"
+
+    elif survey["test_result"] == "positive":
+        risk_score = "F"
+
+    elif survey["test_result"] == "waiting":
+        risk_score = "F"
+        risk_label = "FWAITING"
 
     if not risk_label:
-        risk_label = risk_scores[risk_score]
+        risk_label = risk_score
 
-    return {"score": risk_scores[risk_score], "label": RISK_LABELS[risk_label]}
+    risk_labels_out = []
+    if risk_label in RISK_LABELS:
+        risk_labels_out = RISK_LABELS[risk_label]
+
+    else:
+        logger.error("Could not find risk labels for {}".format(risk_label))
+
+    return {"score": risk_score, "label": risk_labels_out}
 
 
 def get_user_report_from_survey(surveys, schema=None):
@@ -362,7 +372,9 @@ def get_user_report_from_survey(surveys, schema=None):
         respirotary_problem_score = get_summary_score(
             _parsed_survey, respiratory_problems
         )
+
         general_symptom_score = get_summary_score(_parsed_survey, general_symptoms)
+
         activity_score = get_summary_score(
             _parsed_survey, daily_activities, key="activity"
         )
@@ -378,7 +390,7 @@ def get_user_report_from_survey(surveys, schema=None):
             "level": "",
             "message": "",
             "risk": get_risk_score(
-                _parsed_survey_most_recent, has_travel, has_contact, has_contact_close
+                _parsed_survey_most_recent, has_travel, has_contact, has_contact_close,
             ),
             "travel": has_travel,
             "contact": has_contact,
