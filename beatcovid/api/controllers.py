@@ -370,7 +370,7 @@ def get_submission_data(form_name, query, limit=None, count=None, sort=None):
         {
             k: v
             for k, v in i.items()
-            if not (k.startswith("_") and not k in ["_id", "_submission_date", "_uuid"])
+            if not (k.startswith("_") and not k in ["_id", "_submission_time", "_uuid"])
         }
         for i in _resp
     ]
