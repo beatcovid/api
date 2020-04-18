@@ -280,7 +280,6 @@ def get_user_report_from_survey(surveys, schema=None):
         return {}
 
     _scores = []
-    have_dates = []
 
     for s in surveys:
         _parsed_survey = parse_survey(s)
@@ -314,9 +313,16 @@ def get_user_report_from_survey(surveys, schema=None):
             survey_date = dateparse.parse_datetime("2020-04-17T07:08:27.572Z").strftime(
                 "%d-%m-%Y"
             )
-            have_dates.append(survey_date)
 
-            _score["date"] = survey_date
+            _score["date_day"] = survey_date
+            _score["date"] = _parsed_survey["start"]
+
+            if "end" in _parsed_survey:
+                _score["date_end"] = _parsed_survey["end"]
+
+            if "timezone" in _parsed_survey:
+                _score["timezone"] = _parsed_survey["timezone"]
+
             _scores.append(_score)
 
     has_contact = survey_most_recent["contact"] in [
