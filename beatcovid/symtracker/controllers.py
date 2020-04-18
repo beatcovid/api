@@ -6,13 +6,10 @@ import sys
 
 from django.utils import dateparse
 
-from beatcovid.api.controllers import (
-    get_form_schema,
-    get_submission_data,
-    get_survey_user_count,
-    get_user_last_submission,
-    get_user_submissions,
-)
+from beatcovid.api.controllers import (get_form_schema, get_submission_data,
+                                       get_survey_user_count,
+                                       get_user_last_submission,
+                                       get_user_submissions)
 
 logger = logging.getLogger(__name__)
 
@@ -463,6 +460,7 @@ def get_user_report_from_survey(surveys, schema=None):
         "date_submitted": survey_most_recent["end"],
         "app_version": "1.1.0",
         "total_participants": get_survey_user_count(),
+        "respondents_total": get_survey_user_count(),
         "scores": _scores,
     }
 

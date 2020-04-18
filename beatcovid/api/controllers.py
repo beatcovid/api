@@ -440,6 +440,7 @@ def get_submission_stats(form_name):
         "form": server_response["title"],
         "submissions_today": server_response["submission_count_for_today"],
         "submissions": submission_count_base + server_response["num_of_submissions"],
+        "respondents": get_survey_user_count(),
         "submission_last": server_response["last_submission_time"],
         "date_modified": server_response["date_modified"],
     }
