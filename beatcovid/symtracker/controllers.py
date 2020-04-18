@@ -380,6 +380,9 @@ def get_user_report_from_survey(surveys, schema=None):
             "risk": get_risk_score(
                 _parsed_survey_most_recent, has_travel, has_contact, has_contact_close
             ),
+            "travel": has_travel,
+            "contact": has_contact,
+            "contact_close": has_contact_close,
             "summary": _score_summary,
             "main": get_value_dict_subset_for(s, schema, risk_symptoms),
             "other": get_value_dict_subset_for(s, schema, non_risk_symptoms),
