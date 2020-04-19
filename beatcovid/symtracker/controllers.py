@@ -427,7 +427,7 @@ def get_user_report_from_survey(surveys, schema=None):
             _score["date_started"] = _parsed_survey["start"]
 
             if "end" in _parsed_survey:
-                _score["date_submitted"] = _parsed_survey["end"]
+                _score["date_submitted"] = _parsed_survey["_submission_time"]
 
             if "timezone" in _parsed_survey:
                 _score["timezone"] = _parsed_survey["timezone"]
