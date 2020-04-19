@@ -105,15 +105,15 @@ RISK_LABELS = {
     ],
     "D": [
         RISK_HEADER,
-        "Report: You reported that you have moderate to severe symptoms and recent travel or exposure.",
-        "Contact your local health authority and/or your medical practitioner immediately. If you have serious symptoms such as difficulty breathing, call your emergency line for urgent medical help. Please continue to monitor your symptoms and complete the Tracker each day.",
+        "Report: You reported that you have none or mild symptoms and recent travel or exposure.",
+        "Follow the advice about isolation and monitoring your health provided to you by your local health authority. Please, continue to monitor your symptoms and complete the Tracker each day.",
+        "If you experience worsening symptoms such as difficulty breathing, please seek urgent medical help and make sure you let the health service know that you have recently returned from travel or had exposure to a confirmed or suspected case of COVID-19.",
         RISK_FOOTER,
     ],
     "E": [
         RISK_HEADER,
-        "Report: You reported that you have none or mild symptoms and recent travel or exposure.",
-        "Follow the advice about isolation and monitoring your health provided to you by your local health authority. Please, continue to monitor your symptoms and complete the Tracker each day.",
-        "If you experience worsening symptoms such as difficulty breathing, please seek urgent medical help and make sure you let the health service know that you have recently returned from travel or had exposure to a confirmed or suspected case of COVID-19.",
+        "Report: You reported that you have moderate to severe symptoms and recent travel or exposure.",
+        "Contact your local health authority and/or your medical practitioner immediately. If you have serious symptoms such as difficulty breathing, call your emergency line for urgent medical help. Please continue to monitor your symptoms and complete the Tracker each day.",
         RISK_FOOTER,
     ],
     "F": [
@@ -327,10 +327,10 @@ def get_risk_score(survey, has_travel, has_contact):
     elif risk_symptoms_has_mod_or_severe and (not has_contact and not has_travel):
         risk_score = "C"
 
-    elif risk_symptoms_has_mod_or_severe and (has_contact or has_travel):
+    elif risk_symptoms_has_none_or_mild and (has_contact or has_travel):
         risk_score = "D"
 
-    elif risk_symptoms_has_none_or_mild and (has_contact or has_travel):
+    elif risk_symptoms_has_mod_or_severe and (has_contact or has_travel):
         risk_score = "E"
 
     elif "test_results" in survey and survey["test_result"] == "positive":
