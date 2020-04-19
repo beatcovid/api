@@ -419,11 +419,11 @@ def get_user_report_from_survey(surveys, schema=None):
 
         survey_date = None
         if "start" in _parsed_survey:
-            survey_date = dateparse.parse_datetime("2020-04-17T07:08:27.572Z").strftime(
+            survey_date = dateparse.parse_datetime(_parsed_survey["start"]).strftime(
                 "%d-%m-%Y"
             )
 
-            _score["date_day"] = survey_date
+            # _score["date_day"] = survey_date
             _score["date_started"] = _parsed_survey["start"]
 
             if "end" in _parsed_survey:
@@ -435,6 +435,8 @@ def get_user_report_from_survey(surveys, schema=None):
             _scores.append(_score)
 
     report = {
+        "id": survey_most_recent["_id"],
+        "uuid": survey_most_recent["_uuid"],
         "schema_version": survey_most_recent["version"],
         "date_started": survey_most_recent["start"],
         "date_submitted": survey_most_recent["end"],
