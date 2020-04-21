@@ -314,7 +314,7 @@ def get_survey_user_count(form_name="beatcovid19now"):
 
     respondent_count_base = get_respondent_count_base()
 
-    if "count" in q:
+    if q and type(q) is dict and "count" in q:
         return int(q["count"]) + respondent_count_base
 
     return 0 + respondent_count_base
