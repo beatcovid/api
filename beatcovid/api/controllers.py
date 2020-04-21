@@ -372,6 +372,8 @@ def get_submission_data(form_name, query, limit=None, count=None, sort=None):
     try:
         _resp = f.json()
     except Exception as e:
+        logger.error("get_data query: %s %s", data_endpoint, payload_str)
+        logger.exception(e)
         logger.error("Error parsing response JSON %s".format(e))
         return False
 
