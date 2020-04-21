@@ -1,10 +1,13 @@
+import json
 import logging
 
-from rest_framework.decorators import api_view
+from django.http import Http404
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .controllers import get_user_from_request
+from .controllers import get_user_from_request, import_user_session
 from .models import Respondent, TransitionAssistant
 
 logger = logging.getLogger(__name__)
@@ -16,6 +19,31 @@ def UserDetailView(request):
 
     # @TODO include this in the form response
     return Response({"user": str(user.id)})
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated, IsAdminUser])
+def UserImportSession(request):
+    """
+        import a user session from v1.0 user
+
+        will take their tracking_key, import it as a session
+        and return the user_id
+    """
+    if not request.data:
+        raise Http404
+
+    if not "tracking_id" in request.data:
+        raise Http404
+
+    skey = request.data.get("tracking_id", None)
+
+    if not skey:
+        raise Http404
+
+    user_id = import_user_session(request, skey)
+
+    return Response({"user_id": user_id})
 
 
 def check_if_expired(expiry_date, minimum_minutes=0):
@@ -33,33 +61,40 @@ def check_if_expired(expiry_date, minimum_minutes=0):
     else:
         return False
 
+
 class TransferRequest(APIView):
     """
     Get an existing transfer key if valid for at least MIN_VALID minutes
     or generate a new one.
     """
-    MIN_VALID=5
+
+    MIN_VALID = 5
+
     def generate_short_key(self, length=6):
         from random import choice
         from string import ascii_letters, digits
+
         char_set = ascii_letters + digits
-        key = ''.join(choice(char_set) for i in range(length))
+        key = "".join(choice(char_set) for i in range(length))
         return key
 
     def get_or_create_transition_instance(self, respondent):
-        ta = TransitionAssistant.objects.filter(respondent=respondent).order_by("-expires_at")
+        ta = TransitionAssistant.objects.filter(respondent=respondent).order_by(
+            "-expires_at"
+        )
         ta_exists = ta.count()
-        if ta_exists and not check_if_expired(ta.first().expires_at,
-                                              minimum_minutes=MIN_VALID):
-                key = ta.first().transfer_key
+        if ta_exists and not check_if_expired(
+            ta.first().expires_at, minimum_minutes=MIN_VALID
+        ):
+            key = ta.first().transfer_key
         else:
-            key = ''
+            key = ""
             while True:
                 key = self.generate_short_key()
                 exists = TransitionAssistant.objects.filter(transfer_key=key).count()
                 if exists == 0:
                     break
-            TransitionAssistant(respondent=respondent, transfer_key = key).save()
+            TransitionAssistant(respondent=respondent, transfer_key=key).save()
         return key
 
     def get(self, request, format=None):
@@ -74,7 +109,9 @@ class GetUID(APIView):
         value = "transfer_key not provided"
         key = request.POST.get("transfer_key")
         if key:
-            ta = TransitionAssistant.objects.filter(transfer_key=key).order_by("-expires_at")
+            ta = TransitionAssistant.objects.filter(transfer_key=key).order_by(
+                "-expires_at"
+            )
             value = "unknown"
             if ta.count() == 1:
                 if check_if_expired(ta.first().expires_at):
