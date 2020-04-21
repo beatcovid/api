@@ -70,6 +70,10 @@ def get_server_form_by_name(form_name):
     f = requests.get(assets_url, headers=_headers)
     r = f.json()
 
+    if not "count" in r:
+        logger.debug(f"No result from form server. Check auth token: {assets_url}")
+        return None
+
     if r["count"] < 1:
         logger.debug(f"No results from form server. Check auth token: {assets_url}")
         return None
