@@ -53,7 +53,7 @@ CORS_ORIGIN_REGEX_WHITELIST = [
     r"https://beatcovid19now.org",
     r"https://beatcovid.test",
     r"https://beatcovid19now.com",
-    r"https://web.beatcovid19now.com",
+    r"https://web.beatcovid19now.org",
     r"https://stopcovid.infotorch.org",
 ]
 
