@@ -295,8 +295,12 @@ def submit_form(form_name, form_data, user, request):
     # _submit_form_data["end"] = str(datetime.now().isoformat())
     _submit_form_data["server_version"] = "1.1.0"  # @TODO read this from pyproject.toml
     _submit_form_data["server_env"] = os.environ.get("ENV", default="production")
-    _submit_form_data["session_id"] = request.session._get_or_create_session_key()
-    _submit_form_data["user_agent"] = get_user_agent(request)
+
+    if not "session_id" in _submit_form_data:
+        _submit_form_data["session_id"] = request.session._get_or_create_session_key()
+
+    if not "user_agent" in _submit_form_data:
+        _submit_form_data["user_agent"] = get_user_agent(request)
 
     try:
         f = requests.post(submission_endpoint, json=submission_parcel, headers=_headers)
