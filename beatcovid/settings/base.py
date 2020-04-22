@@ -70,6 +70,7 @@ CORS_ALLOW_HEADERS = [
     "x-csrftoken",
     "x-requested-with",
     "x-device-id",
+    "x-uid",
 ]
 
 CORS_ALLOW_METHODS = [
