@@ -193,11 +193,6 @@ def get_user_submissions(form_name, user):
 def submission_cast_date(value):
 
     try:
-        value = datetime.strptime(value, "%m/%d/%Y %I:%M:%S").isoformat()
-    except Exception as e:
-        pass
-
-    try:
         value = datetime.strptime(value, "%m/%d/%Y %H:%M:%S").isoformat()
     except Exception as e:
         pass
