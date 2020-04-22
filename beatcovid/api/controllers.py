@@ -190,6 +190,16 @@ def get_user_submissions(form_name, user):
     return results
 
 
+def submission_cast_date(value):
+
+    try:
+        value = datetime.strptime(value, "%m/%d/%Y %I:%M:%S").isoformat()
+    except Exception as e:
+        pass
+
+    return value
+
+
 def get_form_schema(form_name, request, user):
     """
         Get the form schema from kobo toolbox
@@ -386,7 +396,7 @@ def get_submission_data(form_name, query, limit=None, count=None, sort=None):
 
     _resp = [
         {
-            k: v
+            k: submission_cast_date(v)
             for k, v in i.items()
             if not (k.startswith("_") and not k in ["_id", "_submission_time", "_uuid"])
         }
