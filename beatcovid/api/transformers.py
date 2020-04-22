@@ -29,7 +29,10 @@ def parse_form_label(labels, language_index=0):
 
     label = labels[language_index]
 
-    _output = "".join(label).replace("\n", "")
+    if type(label) is list:
+        label = "".join(label)
+
+    _output = label.replace("\n", "")
 
     _output = html.unescape(_output)
 
