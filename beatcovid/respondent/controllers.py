@@ -28,18 +28,24 @@ def get_user_from_request(request):
 
     """
     session_key = request.session._get_or_create_session_key()
+    v1_session_key = None
 
     # backwards compat for v1.0
     if "uid" in request.COOKIES:
-        session_key = request.COOKIES["uid"]
-        s = Session.objects.filter(cookie_id=session_key).first()
+        v1_session_key = request.COOKIES["uid"]
+
+    if "HTTP_X_UID" in request.META:
+        v1_session_key = request.META["HTTP_X_UID"]
+
+    if v1_session_key:
+        s = Session.objects.filter(cookie_id=v1_session_key).first()
 
         if s:
             return s.respondent
 
         logger.error(
             "Someone sent us an uid cookie but we don't have a session for them. It was {}".format(
-                session_key
+                v1_session_key
             )
         )
 
