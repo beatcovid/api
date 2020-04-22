@@ -15,9 +15,13 @@ from rest_framework.response import Response
 
 from beatcovid.respondent.controllers import get_user_from_request
 
-from .controllers import (get_form_schema, get_submission_data,
-                          get_submission_stats, get_user_submissions,
-                          submit_form)
+from .controllers import (
+    get_form_schema,
+    get_submission_data,
+    get_submission_stats,
+    get_user_submissions,
+    submit_form,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -26,14 +30,10 @@ _clean_form_name = re.compile("[^a-zA-Z\-\_0-9]")
 
 
 @api_view(["POST"])
-# @permission_classes([IsAuthenticated])
 def FormSubmission(request, form_name):
     user = get_user_from_request(request)
 
-    try:
-        submission = json.loads(request.body)  # request.raw_post_data w/ Django < 1.4
-    except KeyError:
-        raise HttpResponseBadRequest("Malformed data")
+    submission = request.data
 
     if "user_id" in submission:
         submitted_user = submission["user_id"]
@@ -46,7 +46,6 @@ def FormSubmission(request, form_name):
     result = submit_form(form_name, submission, user, request)
 
     if not result:
-        print("404")
         raise Http404
 
     return Response(result)
