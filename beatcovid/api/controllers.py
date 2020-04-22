@@ -197,6 +197,11 @@ def submission_cast_date(value):
     except Exception as e:
         pass
 
+    try:
+        value = datetime.strptime(value, "%m/%d/%Y %H:%M:%S").isoformat()
+    except Exception as e:
+        pass
+
     return value
 
 
