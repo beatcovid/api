@@ -437,9 +437,15 @@ def get_user_report_from_survey(surveys, schema=None):
     report = {
         "id": survey_most_recent["_id"],
         "uuid": survey_most_recent["_uuid"],
-        "schema_version": survey_most_recent["version"],
-        "date_started": survey_most_recent["start"],
-        "date_submitted": survey_most_recent["end"],
+        "schema_version": survey_most_recent["version"]
+        if "version" in survey_most_recent
+        else None,
+        "date_started": survey_most_recent["start"]
+        if "start" in survey_most_recent
+        else None,
+        "date_submitted": survey_most_recent["end"]
+        if "end" in survey_most_recent
+        else None,
         "app_version": "1.1.0",
         "total_participants": get_survey_user_count(),
         "respondents_total": get_survey_user_count(),
