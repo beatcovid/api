@@ -271,12 +271,17 @@ DEFAULT_FROM_EMAIL = env(
 
 
 # Internationalization
-LANGUAGE_CODE = "en-au"
+LANGUAGE_CODE = "en"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
+LANGUAGES = [
+    ("en", "English"),
+    ("nl", "Dutch"),
+    ("ar", "Arabic"),
+]
 
 # Static files (CSS, JavaScript, Images)
 USE_S3 = os.getenv("USE_S3", default=False)
