@@ -38,10 +38,8 @@ else:
     logger.warn("Sentry has not been set")
 
 ALLOWED_HOSTS = [
-    "api.stopcovid.infotorch.org",
     "api.beatcovid19now.org",
-    "api.beatcovid19now.com",
-    "api.staging.beatcovid19now.org",
+    "api.beatcov-staging.org",
     "api.beatcovid.test",
     "127.0.0.1",
     "localhost",
@@ -52,9 +50,7 @@ ALLOWED_CLIENT_HOSTS = ALLOWED_HOSTS
 CORS_ORIGIN_REGEX_WHITELIST = [
     r"https://beatcovid19now.org",
     r"https://beatcovid.test",
-    r"https://beatcovid19now.com",
-    r"https://web.beatcovid19now.org",
-    r"https://stopcovid.infotorch.org",
+    r"https://beatcov-staging.com",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
