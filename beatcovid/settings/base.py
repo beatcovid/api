@@ -39,7 +39,7 @@ else:
 
 ALLOWED_HOSTS = [
     "api.beatcovid19now.org",
-    "api.beatcov-staging.org",
+    "api.beatcov-staging.com",
     "api.beatcovid.test",
     "127.0.0.1",
     "localhost",
