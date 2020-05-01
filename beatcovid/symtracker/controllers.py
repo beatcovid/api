@@ -353,6 +353,15 @@ def get_risk_score(survey, has_travel, has_contact):
     return {"score": risk_score, "label": risk_labels_out}
 
 
+def pick_field(field_name, surveys):
+    field_values = set()
+    for survey in surveys:
+        if field_name in survey:
+            field_values.add(survey[field_name])
+
+    return list(field_values)
+
+
 def get_user_report_from_survey(surveys, schema=None):
     survey_most_recent = surveys[0]
     _parsed_survey_most_recent = parse_survey(survey_most_recent)
@@ -362,6 +371,13 @@ def get_user_report_from_survey(surveys, schema=None):
         return {}
 
     _scores = []
+
+    dates = {}
+
+    dates["travel"] = pick_field("travel_date", surveys)
+    dates["contact"] = pick_field("contact_last_date", surveys)
+    dates["test"] = pick_field("test_date", surveys)
+    dates["isolation"] = pick_field("face_contact_limit_date", surveys)
 
     for s in surveys:
         _parsed_survey = parse_survey(s)
@@ -449,6 +465,7 @@ def get_user_report_from_survey(surveys, schema=None):
         "app_version": "1.1.0",
         "total_participants": get_survey_user_count(),
         "respondents_total": get_survey_user_count(),
+        "dates": dates,
         "scores": _scores,
     }
 
