@@ -42,6 +42,7 @@ ALLOWED_HOSTS = [
     "api.beatcov-staging.com",
     "api.beatcovid.test",
     "api.beatcov.org",
+    "api.stopcovid.infotorch.org",
     "127.0.0.1",
     "localhost",
 ]
@@ -53,6 +54,7 @@ CORS_ORIGIN_REGEX_WHITELIST = [
     r"https://beatcovid.test",
     r"https://beatcov-staging.com",
     r"https://beatcov.org",
+    r"https://stopcovid.infotorch.org",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
