@@ -45,7 +45,7 @@ def get_kobocat_token():
 
 def get_submission_count_base():
     if settings.SUBMISSION_COUNT_BASE:
-        return settings.SUBMISSION_COUNT_BASEKOBO_FORM_SERVER
+        return settings.SUBMISSION_COUNT_BASE
     return 0
 
 
