@@ -114,8 +114,11 @@ def load_externs(list_name, request):
 
         user_language = get_language_from_request(request)
 
+        if not user_language:
+            user_language = "en"
+
         for l in Language.objects.all():
-            if l.iso_639_1 == user_language:
+            if l.iso_639_1 == user_language[:2]:
                 languages_top.append(
                     {"id": "languages", "value": l.iso_639_1, "label": l.name_en}
                 )
