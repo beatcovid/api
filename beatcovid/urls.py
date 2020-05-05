@@ -27,8 +27,10 @@ admin.site.index_title = "beatcovid19 Admin"
 favicon_view = RedirectView.as_view(url="/staticfiles/favicon.ico", permanent=True)
 
 urlpatterns = [
-    path("api/form/schema/<str:form_name>/", cache_page(60 * 15)(FormSchema)),
-    path("api/form/stats/<str:form_name>/", cache_page(60 * 15)(FormStats)),
+    # path("api/form/schema/<str:form_name>/", cache_page(60 * 15)(FormSchema)),
+    path("api/form/schema/<str:form_name>/", (FormSchema)),
+    # path("api/form/stats/<str:form_name>/", cache_page(60 * 15)(FormStats)),
+    path("api/form/stats/<str:form_name>/", (FormStats)),
     path("api/form/submit/<str:form_name>/", FormSubmission),
     path("api/form/data/<str:form_name>/", FormData),
     path("api/tracker/", SymptomTracker),
