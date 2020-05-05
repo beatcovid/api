@@ -5,14 +5,18 @@ import os
 import uuid
 from datetime import datetime
 
-import requests
+import redis
+import requests as requestslib
 from django.conf import settings
 from django.utils.translation import get_language_from_request
+
+from beatcovid.core.cache import get_cache, set_cache
 
 from .transformers import parse_kobo_json
 from .utils import get_user_agent
 
 logger = logging.getLogger(__name__)
+requests = requestslib.Session()
 
 
 def get_formserver_uri():
@@ -41,7 +45,7 @@ def get_kobocat_token():
 
 def get_submission_count_base():
     if settings.SUBMISSION_COUNT_BASE:
-        return settings.SUBMISSION_COUNT_BASE
+        return settings.SUBMISSION_COUNT_BASEKOBO_FORM_SERVER
     return 0
 
 
@@ -58,6 +62,15 @@ def get_server_form_by_name(form_name):
         @param form_name - name of the form to find
         @returns
     """
+    cache_key = "get_server_form_by_name"
+    form_id = get_cache(cache_key, form_name)
+
+    if form_id:
+        logger.debug("CACHE HIT for {}".format(form_name))
+        return form_id
+
+    logger.debug("CACHE MISS for {}".format(form_name))
+
     logger.debug(f"Retrieving {form_name} from form server")
 
     _formserver = get_formserver_uri()
@@ -87,6 +100,8 @@ def get_server_form_by_name(form_name):
             f"No result matching {form_name} from server. Available forms: {available_forms}"
         )
         return None
+
+    set_cache(cache_key, form_name, m[0])
 
     return m[0]
 

@@ -209,7 +209,7 @@ logger.info("Using database {}".format(DB_USING))
 COUNTRIES_FIRST = ["AU", "NZ"]
 # redis
 REDIS_HOST = env("REDIS_HOST", default="127.0.0.6")
-REDIS_URL = env("REDIS_URL", default="redis://127.0.0.6:6379/")
+REDIS_URL = env("REDIS_URL", default="redis://127.0.0.10:6379/")
 
 from ..scheduler import scheduler  # isort:skip pylint: disable=wrong-import-position
 
