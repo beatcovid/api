@@ -2,6 +2,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
+from django.views.decorators.cache import cache_page
 from django.views.generic.base import RedirectView
 
 from beatcovid.api.views import (
@@ -26,8 +27,8 @@ admin.site.index_title = "beatcovid19 Admin"
 favicon_view = RedirectView.as_view(url="/staticfiles/favicon.ico", permanent=True)
 
 urlpatterns = [
-    path("api/form/schema/<str:form_name>/", FormSchema),
-    path("api/form/stats/<str:form_name>/", FormStats),
+    path("api/form/schema/<str:form_name>/", cache_page(60 * 15)(FormSchema)),
+    path("api/form/stats/<str:form_name>/", cache_page(60 * 15)(FormStats)),
     path("api/form/submit/<str:form_name>/", FormSubmission),
     path("api/form/data/<str:form_name>/", FormData),
     path("api/tracker/", SymptomTracker),
