@@ -1,4 +1,5 @@
 import json
+import os
 from datetime import datetime, timedelta
 
 import redis
@@ -6,8 +7,14 @@ from django.conf import settings
 
 
 def get_redis_url():
+    redis_url = os.environ.get("REDIS_URL", default=None)
+
+    if redis_url:
+        return redis_url
+
     if settings.REDIS_URL:
         return settings.REDIS_URL
+
     raise Exception("REDIS_URL not set in settings please set it.")
 
 
