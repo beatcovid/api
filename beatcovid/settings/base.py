@@ -95,6 +95,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # local
+    "beatcovid",
     "beatcovid.api",
     "beatcovid.respondent",
     "beatcovid.symtracker",
@@ -112,6 +113,7 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    # "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -282,12 +284,14 @@ DEFAULT_FROM_EMAIL = env(
 
 # Internationalization
 LANGUAGE_CODE = "en"
+LANGUAGE_COOKIE_DOMAIN = COOKIE_DOMAIN
+LANGUAGE_COOKIE_NAME = "locale"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-LOCALE_PATHS = [BASE_DIR + "beatcovid/locale"]
+LOCALE_PATHS = [BASE_DIR + "/beatcovid/locale"]
 
 # Static files (CSS, JavaScript, Images)
 USE_S3 = os.getenv("USE_S3", default=False)
