@@ -5,7 +5,7 @@ import re
 import sys
 
 from django.utils import dateparse
-
+from django.utils.translation import ugettext_lazy as _
 from beatcovid.api.controllers import (
     get_form_schema,
     get_submission_data,
@@ -78,9 +78,7 @@ daily_activities = [
 
 non_risk_symptoms = [s for s in all_symptoms if not s in risk_symptoms]
 
-RISK_HEADER = (
-    "<h2>Your results today based on the<br>Australian Government recommendations</h2>"
-)
+RISK_HEADER = _("symtracker.risk.header")
 
 RISK_FOOTER = "For up-to-date information follow your national COVID-19 guidelines or look at 'Advice for public' on the <a href='https://www.who.int/emergencies/diseases/novel-coronavirus-2019/advice-for-public' target='_blank'>WHO website</a>."
 
