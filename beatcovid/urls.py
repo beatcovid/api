@@ -10,6 +10,7 @@ from beatcovid.api.views import (
     FormSchema,
     FormStats,
     FormSubmission,
+    TranslationTest,
     UserSubmissionView,
 )
 from beatcovid.respondent.views import (
@@ -27,9 +28,7 @@ admin.site.index_title = "beatcovid19 Admin"
 favicon_view = RedirectView.as_view(url="/staticfiles/favicon.ico", permanent=True)
 
 urlpatterns = [
-    # path("api/form/schema/<str:form_name>/", cache_page(60 * 15)(FormSchema)),
     path("api/form/schema/<str:form_name>/", (FormSchema)),
-    # path("api/form/stats/<str:form_name>/", cache_page(60 * 15)(FormStats)),
     path("api/form/stats/<str:form_name>/", (FormStats)),
     path("api/form/submit/<str:form_name>/", FormSubmission),
     path("api/form/data/<str:form_name>/", FormData),
@@ -40,6 +39,7 @@ urlpatterns = [
     path("api/admin/import/", UserImportSession),
     path("api/transfer/request/", TransferRequest.as_view()),
     path("api/transfer/getUID/", GetUID.as_view()),
+    path("api/translate/", TranslationTest),
     path("admin/", admin.site.urls),
     path("favicon.ico", favicon_view),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

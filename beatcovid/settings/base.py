@@ -2,6 +2,7 @@ import logging
 import os
 
 import sentry_sdk
+from dotenv import load_dotenv
 from sentry_sdk.integrations.django import DjangoIntegration
 
 from ..utils import skip_site_packages_logs
@@ -16,7 +17,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 ENV = env("ENV", default="development")
 DEBUG = env("DEBUG", default=True)
 
-load_environment(os.path.join(BASE_DIR, f".env.{ENV}"))
+ENV_PATH = os.path.join(BASE_DIR, f".env.{ENV}")
+
+if os.path.isfile(ENV_PATH):
+    print(f"Loading env from {ENV_PATH}")
+    load_dotenv(dotenv_path=ENV_PATH)
+
 
 # False if not in os.environ
 DEBUG = env("DEBUG", default=True)
@@ -207,9 +213,13 @@ DATABASES = {"default": DATABASES_AVAILABLE[DB_USING]}
 logger.info("Using database {}".format(DB_USING))
 
 COUNTRIES_FIRST = ["AU", "NZ"]
+
 # redis
 REDIS_HOST = env("REDIS_HOST", default="127.0.0.6")
 REDIS_URL = env("REDIS_URL", default="redis://127.0.0.10:6379/")
+
+# mongo
+MONGO_HOST = env("MONGO_HOST", default="mongodb://127.0.0.1/")
 
 from ..scheduler import scheduler  # isort:skip pylint: disable=wrong-import-position
 
@@ -271,24 +281,26 @@ DEFAULT_FROM_EMAIL = env(
 
 
 # Internationalization
-LANGUAGE_CODE = "en-au"
+LANGUAGE_CODE = "en"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
+LOCALE_PATHS = [BASE_DIR + "beatcovid/locale"]
 
 # Static files (CSS, JavaScript, Images)
 USE_S3 = os.getenv("USE_S3", default=False)
 
 if USE_S3:
+    AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
+
     logger.info(
         "Setting up S3 for static hosting with bucket {}".format(AWS_STORAGE_BUCKET_NAME)
     )
     # aws settings
     AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
     AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
-    AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
     AWS_DEFAULT_ACL = "public-read"
     AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}"
     AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}

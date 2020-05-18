@@ -11,6 +11,7 @@ from django.conf import settings
 from django.utils.translation import get_language_from_request
 
 from beatcovid.core.cache import get_cache, set_cache
+from beatcovid.core.mongo import get_mongo_db
 
 from .transformers import parse_kobo_json
 from .utils import get_user_agent
@@ -435,6 +436,41 @@ def kobocat_transform_transport(record):
             record_out[i.lstrip("_")] = record[i]
 
     return record_out
+
+
+def get_stats(form_name):
+    """
+
+        get submission stats straight from ongo
+
+        @param form_name - kobo form name
+    """
+
+    form_id = get_form_id_from_name(form_name)
+
+    if not form_id:
+        logger.info(f"get_form_id_from_name got no form id for form: {form_name}")
+        return None
+
+    db = get_mongo_db()
+
+    _filter_total_subs = {}
+
+    submission_count_base = get_submission_count_base()
+    submission_count = db.find(_filter_total_subs).count()
+    respondents = len(db.distinct("user_id"))
+
+    beatcovid_response = {
+        "form": form_name,
+        # "submissions_today": server_response["submission_count_for_today"],
+        "submissions_raw": submission_count_base + submission_count,
+        "submissions": submission_count,
+        "respondents": respondents,
+        # "submission_last": server_response["last_submission_time"],
+        # "date_modified": server_response["date_modified"],
+    }
+
+    return beatcovid_response
 
 
 def get_submission_stats(form_name):

@@ -7,6 +7,7 @@ import uuid
 from django.db.models import Avg, Count, F
 from django.http import Http404, HttpResponseBadRequest
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.cache import cache_page
 from rest_framework import generics, permissions, status, viewsets
 from rest_framework.decorators import api_view, permission_classes
@@ -17,6 +18,7 @@ from beatcovid.respondent.controllers import get_user_from_request
 
 from .controllers import (
     get_form_schema,
+    get_stats,
     get_submission_data,
     get_submission_stats,
     get_user_submissions,
@@ -69,7 +71,7 @@ def FormSchema(request, form_name):
 def FormStats(request, form_name):
     form_name = _clean_form_name.sub("", form_name)
 
-    result = get_submission_stats(form_name)
+    result = get_stats(form_name)
 
     if not result:
         raise Http404
@@ -118,4 +120,10 @@ def FormData(request, form_name):
     if not result:
         raise Http404
 
+    return Response(result)
+
+
+@api_view(["GET"])
+def TranslationTest(request):
+    result = {"test": _("condition.immune_system")}
     return Response(result)
