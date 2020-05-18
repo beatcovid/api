@@ -7,7 +7,8 @@ import uuid
 from django.db.models import Avg, Count, F
 from django.http import Http404, HttpResponseBadRequest
 from django.utils.decorators import method_decorator
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import get_language_from_request
+from django.utils.translation import ugettext as _
 from django.views.decorators.cache import cache_page
 from rest_framework import generics, permissions, status, viewsets
 from rest_framework.decorators import api_view, permission_classes
@@ -125,5 +126,8 @@ def FormData(request, form_name):
 
 @api_view(["GET"])
 def TranslationTest(request):
-    result = {"test": _("condition.immune_system")}
+    result = {
+        "test": _("condition.immune_system"),
+        "lang": get_language_from_request(request),
+    }
     return Response(result)
