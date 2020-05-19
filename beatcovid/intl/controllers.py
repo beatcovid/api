@@ -1,10 +1,13 @@
 import glob
+import logging
 import os
 from pprint import pprint
 
 import polib
 from django.core.management.base import CommandError
 from django.core.management.utils import find_command, is_ignored_path
+
+logger = logging.getLogger(__name__)
 
 
 def find_locale_paths():
@@ -86,8 +89,42 @@ def po_to_lokalise(poentry):
 
     return {
         "key_name": poentry.msgid,
-        "comments": {"comment": poentry.comment or occurrences},
+        "comments": [{"comment": poentry.comment or occurrences}],
         "platforms": ["web"],
         "tags": ["api"],
         "translations": [{"language_iso": "en", "translation": poentry.msgstr}],
     }
+
+
+def extract_messages():
+    locations = find_locale_paths()
+    msgstrings = parse_locales(locations)
+
+    return msgstrings
+
+
+def update_keys(lokalise, messages):
+    keys_to_add = []
+    keys_to_update = []
+
+    keys = lokalise.keys_list()
+
+    key_ids = [k["key_name"]["web"] for k in keys]
+
+    for message in messages:
+        _id = message["key_name"]
+        if _id in key_ids:
+            print(f"lokalise has key {_id}")
+            message["key_id"] = list(filter(lambda x: x["key_name"]["web"] == _id, keys))[
+                0
+            ]["key_id"]
+            keys_to_update.append(message)
+        else:
+            print(f"lokalise does not have key {_id}")
+            keys_to_add.append(message)
+
+    if len(keys_to_update) > 0:
+        lokalise.keys_update(keys_to_update)
+
+    if len(keys_to_add) > 0:
+        lokalise.keys_add(keys_to_add)

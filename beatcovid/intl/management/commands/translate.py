@@ -3,7 +3,7 @@ import logging
 from django.core.management.base import BaseCommand, CommandError
 
 from beatcovid.core.lokalise import Lokalise
-from beatcovid.intl.controllers import find_locale_paths
+from beatcovid.intl.controllers import extract_messages, update_keys
 
 logger = logging.getLogger(__name__)
 
@@ -18,12 +18,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         dry_run = options["dry_run"]
+        l = Lokalise()
 
-        find_locale_paths()
+        messages = extract_messages()
 
-        # l = Lokalise()
-        # r = l.keys_list()
-
-        # from pprint import pprint
-
-        # pprint(r)
+        keys = update_keys(l, messages)

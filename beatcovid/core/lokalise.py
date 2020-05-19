@@ -20,8 +20,6 @@ class Lokalise:
         self.token = get_lokalise_token()
         self.project = get_lokalise_project_id()
 
-        print(self.token)
-
         self.session.headers.update({"x-api-token": self.token})
 
     def keys_list(self):
@@ -29,7 +27,7 @@ class Lokalise:
             **{"project_id": self.project, "endpoint": "keys"}
         )
 
-        print(req_url)
+        print("GET", req_url)
 
         resp = self.session.get(
             req_url,
@@ -42,6 +40,37 @@ class Lokalise:
         )
 
         if resp.status_code != 200:
+            logger.error(resp.text)
             raise Exception("Error: {}".format(resp))
 
-        return resp.json()
+        _resp = resp.json()
+
+        if "keys" in _resp:
+            return _resp["keys"]
+        return []
+
+    def keys_add(self, keys):
+        req_url = LOKALISE_BASE_URI.format(
+            **{"project_id": self.project, "endpoint": "keys"}
+        )
+
+        print("POST", req_url)
+
+        resp = self.session.post(req_url, json={"keys": keys})
+
+        if resp.status_code != 200:
+            logger.error(resp.text)
+            raise Exception("Error: {}".format(resp))
+
+    def keys_update(self, keys):
+        req_url = LOKALISE_BASE_URI.format(
+            **{"project_id": self.project, "endpoint": "keys"}
+        )
+
+        print("PUT", req_url)
+
+        resp = self.session.put(req_url, json={"keys": keys})
+
+        if resp.status_code != 200:
+            logger.error(resp.text)
+            raise Exception("Error: {}".format(resp))
