@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-19 20:07+0000\n"
+"POT-Creation-Date: 2020-05-19 21:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,12 +22,136 @@ msgstr ""
 msgid "condition.immune_system"
 msgstr "This is a test immune system string"
 
+#: beatcovid/symtracker/controllers.py:30
+#: beatcovid/symtracker/controllers.py:59
+msgid "aches"
+msgstr "aches"
+
+#: beatcovid/symtracker/controllers.py:31
+#: beatcovid/symtracker/controllers.py:50
+#: beatcovid/symtracker/controllers.py:68
+msgid "cough"
+msgstr "cough"
+
+#: beatcovid/symtracker/controllers.py:32
+msgid "diarrhoea"
+msgstr "diarrhoea"
+
+#: beatcovid/symtracker/controllers.py:33
+#: beatcovid/symtracker/controllers.py:60
+#: beatcovid/symtracker/controllers.py:68
+msgid "fatigue"
+msgstr "fatigue"
+
+#: beatcovid/symtracker/controllers.py:34
+#: beatcovid/symtracker/controllers.py:61
+#: beatcovid/symtracker/controllers.py:68
+msgid "feverish"
+msgstr "feverish"
+
+#: beatcovid/symtracker/controllers.py:35
+#: beatcovid/symtracker/controllers.py:62
+msgid "headache"
+msgstr "headache"
+
+#: beatcovid/symtracker/controllers.py:36
+#: beatcovid/symtracker/controllers.py:51
+msgid "nasal_congestion"
+msgstr "Nasal Congestion"
+
+#: beatcovid/symtracker/controllers.py:37
+msgid "nausea"
+msgstr "nausea"
+
+#: beatcovid/symtracker/controllers.py:38
+#: beatcovid/symtracker/controllers.py:63
+msgid "neckpain"
+msgstr "Neck Pain"
+
+#: beatcovid/symtracker/controllers.py:39
+#: beatcovid/symtracker/controllers.py:65
+msgid "noappetite"
+msgstr "No Appetite"
+
+#: beatcovid/symtracker/controllers.py:40
+#: beatcovid/symtracker/controllers.py:53
+#: beatcovid/symtracker/controllers.py:68
+msgid "nobreath"
+msgstr "No breath"
+
+#: beatcovid/symtracker/controllers.py:41
+#: beatcovid/symtracker/controllers.py:64
+msgid "nosleep"
+msgstr "No sleep"
+
+#: beatcovid/symtracker/controllers.py:42
+msgid "nosmell"
+msgstr "No Smell"
+
+#: beatcovid/symtracker/controllers.py:43
+#: beatcovid/symtracker/controllers.py:54
+msgid "phlegm"
+msgstr "Phlegm"
+
+#: beatcovid/symtracker/controllers.py:44
+#: beatcovid/symtracker/controllers.py:52
+#: beatcovid/symtracker/controllers.py:68
+msgid "sorethroat"
+msgstr "Sore Throat"
+
+#: beatcovid/symtracker/controllers.py:45
+msgid "taste"
+msgstr "Taste"
+
+#: beatcovid/symtracker/controllers.py:46
+#: beatcovid/symtracker/controllers.py:55
+msgid "wheezing"
+msgstr "Wheezing"
+
+#: beatcovid/symtracker/controllers.py:71
+msgid "activities"
+msgstr "Activities"
+
+#: beatcovid/symtracker/controllers.py:72
+msgid "bed"
+msgstr "Bed"
+
+#: beatcovid/symtracker/controllers.py:73
+msgid "home"
+msgstr "Home"
+
+#: beatcovid/symtracker/controllers.py:74
+msgid "meals"
+msgstr "Meals"
+
+#: beatcovid/symtracker/controllers.py:75
+msgid "tasks"
+msgstr "Tasks"
+
+#: beatcovid/symtracker/controllers.py:76
+msgid "selfcare"
+msgstr "Self Care"
+
+#: beatcovid/symtracker/controllers.py:77
+msgid "leaveroom"
+msgstr "Leave Room"
+
 #: beatcovid/symtracker/controllers.py:82
 msgid "symtracker.risk.header"
 msgstr ""
 "<h2>Your results today based on the<br>Australian Government "
 "recommendations</h2>"
 
+#: beatcovid/symtracker/controllers.py:84
+#, fuzzy
+#| msgid "symtracker.risk.header"
+msgid "symtracker.risk.footer"
+msgstr ""
+"For up-to-date information follow your national COVID-19 guidelines or look "
+"at 'Advice for public' on the <a href='https://www.who.int/emergencies/"
+"diseases/novel-coronavirus-2019/advice-for-public' target='_blank'>WHO "
+"website</a>."
+
 #: templates/rest_framework/api.html:11
 msgid "beatcovid19 API"
-msgstr ""
+msgstr "beatcovid19now API"

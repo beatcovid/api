@@ -81,35 +81,45 @@ non_risk_symptoms = [s for s in all_symptoms if not s in risk_symptoms]
 
 RISK_HEADER = _("symtracker.risk.header")
 
-RISK_FOOTER = "For up-to-date information follow your national COVID-19 guidelines or look at 'Advice for public' on the <a href='https://www.who.int/emergencies/diseases/novel-coronavirus-2019/advice-for-public' target='_blank'>WHO website</a>."
+RISK_FOOTER = _("symtracker.risk.footer")
 
 RISK_LABELS = {
     "A": [
         RISK_HEADER,
+        _("symtracker.risk.A.content1"),
+        _("symtracker.risk.A.content2"),
         "Report: No or mild symptoms, no recent travel or exposure",
         "Please continue to monitor your wellbeing and complete the Tracker each day.",
         RISK_FOOTER,
     ],
     "B": [
         RISK_HEADER,
+        _("symtracker.risk.B.content1"),
+        _("symtracker.risk.B.content2"),
         "Report: You reported that you have mild, moderate or severe symptoms and no recent travel or exposure.",
         "Please continue to monitor your symptoms and complete the Tracker each day. If you have serious symptoms such as difficulty breathing, call  your emergency line for urgent medical help. If you would like to talk to someone about your symptoms, contact your local COVID-19 Health Information Line.",
         RISK_FOOTER,
     ],
     "C": [
         RISK_HEADER,
+        _("symtracker.risk.C.content1"),
+        _("symtracker.risk.C.content2"),
         "Report: You reported that you may have symptoms including shortness of breath (moderate or severe), with no recent travel or exposure.",
         "If you have serious symptoms such as difficulty breathing, call your emergency line for urgent medical help.  If you would like to talk to someone about your symptoms, contact your local COVID-19 Health Information Line. Please continue to monitor your symptoms and complete the Tracker each day.",
         RISK_FOOTER,
     ],
     "D": [
         RISK_HEADER,
+        _("symtracker.risk.D.content1"),
+        _("symtracker.risk.D.content2"),
         "Report: You reported that you have none or mild symptoms and recent travel or exposure.",
         "Follow the advice about isolation and monitoring your health provided to you by your local health authority. Please, continue to monitor your symptoms and complete the Tracker each day.",
         RISK_FOOTER,
     ],
     "E": [
         RISK_HEADER,
+        _("symtracker.risk.E.content1"),
+        _("symtracker.risk.E.content2"),
         "Report: You reported that you have moderate to severe symptoms and recent travel or exposure.",
         "Contact your local health authority and/or your medical practitioner immediately. If you have serious symptoms such as difficulty breathing, call your emergency line for urgent medical help. Please continue to monitor your symptoms and complete the Tracker each day.",
         "If you experience worsening symptoms such as difficulty breathing, please seek urgent medical help and make sure you let the health service know that you have recently returned from travel or had exposure to a confirmed or suspected case of COVID-19.",
@@ -117,6 +127,10 @@ RISK_LABELS = {
     ],
     "F": [
         RISK_HEADER,
+        _("symtracker.risk.F.content1"),
+        _("symtracker.risk.F.content2"),
+        _("symtracker.risk.F.content3"),
+        _("symtracker.risk.F.content4"),
         "You have reported a positive COVID-19 test result or are awaiting your test results.",
         "Follow the advice about isolation and monitoring your health provided to you by your local health authority. Please, continue to monitor your symptoms and complete the Tracker each day.",
         "If you experience worsening symptoms such as difficulty breathing, please seek urgent medical help and make sure you let the health service know that you have tested positive for COVID-19.",
@@ -124,6 +138,10 @@ RISK_LABELS = {
     ],
     "FWAITING": [
         RISK_HEADER,
+        _("symtracker.risk.FW.content1"),
+        _("symtracker.risk.F.content2"),
+        _("symtracker.risk.F.content3"),
+        _("symtracker.risk.F.content4"),
         "You have reported you are awaiting your test results. ",
         "Follow the advice about isolation and monitoring your health provided to you by your local health authority. Please, continue to monitor your symptoms and complete the Tracker each day.",
         "If you experience worsening symptoms such as difficulty breathing, please seek urgent medical help and make sure you let the health service know that you are awaiting your test results.",

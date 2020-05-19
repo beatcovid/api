@@ -83,13 +83,14 @@ def po_to_lokalise(poentry):
     floc = []
 
     for (f, l) in poentry.occurrences:
-        floc.append("{}:{}".format(f, l))
+        floc.append({"comment": "{}:{}".format(f, l)})
 
-    occurrences = "\n".join(floc)
+    if poentry.comment:
+        floc.append({"comment": poentry.comment})
 
     return {
         "key_name": poentry.msgid,
-        "comments": [{"comment": poentry.comment or occurrences}],
+        "comments": floc,
         "platforms": ["web"],
         "tags": ["api"],
         "translations": [{"language_iso": "en", "translation": poentry.msgstr}],
