@@ -56,9 +56,12 @@ def parse_form_label(labels, language_index=0):
 
 def translate_form_label(key, locale="en"):
     if not locale in translations:
+        print("falling back to default locale since {} not found", locale)
         locale = "en"
 
     translation = translations[locale]
+
+    print(f"using translation {locale}")
 
     if not key in translation:
         if key in translations["en"]:
@@ -68,7 +71,7 @@ def translate_form_label(key, locale="en"):
     return translation[key]
 
 
-def _parse_question(si, choices, request):
+def _parse_question(si, choices, request, user_language):
     q = {"id": si["$kuid"]}
 
     mapped_fields = [
@@ -91,7 +94,7 @@ def _parse_question(si, choices, request):
             q[f] = si[f]
 
     if "label" in q:
-        q["label"] = translate_form_label(si["name"])
+        q["label"] = translate_form_label(si["name"], user_language)
 
     if "required" not in q:
         q["required"] = False
@@ -107,7 +110,7 @@ def _parse_question(si, choices, request):
             {
                 "id": si["name"],
                 "value": i["name"],
-                "label": translate_form_label(si["name"]),
+                "label": translate_form_label(i["name"], user_language),
             }
             for i in c
         ]
@@ -201,7 +204,7 @@ def parse_kobo_json(form_json, request, user, last_submission=None):
         if si["type"] == "begin_group" and not in_step:
             step = {"name": si["name"], "questions": []}
             if "label" in si:
-                step["label"] = translate_form_label(si["name"])
+                step["label"] = translate_form_label(si["name"], user_language)
             # q = {}
             in_step = True
         elif si["type"] == "end_group" and in_step:
@@ -210,14 +213,14 @@ def parse_kobo_json(form_json, request, user, last_submission=None):
         elif in_step:
             if "retain" in si:
                 retained.append(si["name"])
-            q = _parse_question(si, choices, request)
+            q = _parse_question(si, choices, request, user_language)
 
             if "name" in q and "label" in q:
-                _label_map[q["name"]] = translate_form_label(si["name"])
+                _label_map[q["name"]] = translate_form_label(si["name"], user_language)
 
             step["questions"].append(q)
         else:
-            _global = _parse_question(si, choices, request)
+            _global = _parse_question(si, choices, request, user_language)
 
             if _global["name"] == "user_id" and user_id:
                 _global["calculation"] = user_id
