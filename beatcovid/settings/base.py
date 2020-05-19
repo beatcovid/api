@@ -96,6 +96,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # local
     "beatcovid",
+    "beatcovid.intl",
     "beatcovid.api",
     "beatcovid.respondent",
     "beatcovid.symtracker",
@@ -290,6 +291,12 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
+
+
+LOKALISE_TOKEN = os.getenv("LOKALISE_TOKEN", default=None)
+LOKALISE_PROJECT_ID = os.getenv(
+    "LOKALISE_PROJECT_ID", default="588298865e9f9f91e6f251.37381743"
+)
 
 LOCALE_PATHS = [BASE_DIR + "/beatcovid/locale"]
 
