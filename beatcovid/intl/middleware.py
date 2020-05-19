@@ -19,6 +19,10 @@ class LocaleMiddleware(MiddlewareMixin):
         if language_qs:
             language = language_qs
 
+        if "X-LOCALE" in request.META:
+            language_header = request.META["X-LOCALE"]
+            language = language_header
+
         # fallback to default language
         if not language:
             language = settings.LANGUAGE_CODE
