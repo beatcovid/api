@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-19 21:54+0000\n"
+"POT-Creation-Date: 2020-05-19 22:05+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,13 +22,81 @@ msgstr ""
 msgid "condition.immune_system"
 msgstr "This is a test immune system string"
 
-#: beatcovid/symtracker/controllers.py:82
+#: beatcovid/symtracker/controllers.py:30
+msgid "aches"
+msgstr "aches"
+
+#: beatcovid/symtracker/controllers.py:31
+msgid "cough"
+msgstr "cough"
+
+#: beatcovid/symtracker/controllers.py:32
+msgid "diarrhoea"
+msgstr "diarrhoea"
+
+#: beatcovid/symtracker/controllers.py:33
+msgid "fatigue"
+msgstr "fatigue"
+
+#: beatcovid/symtracker/controllers.py:34
+msgid "feverish"
+msgstr "feverish"
+
+#: beatcovid/symtracker/controllers.py:35
+msgid "headache"
+msgstr "headache"
+
+#: beatcovid/symtracker/controllers.py:36
+msgid "nasal_congestion"
+msgstr "Nasal Congestion"
+
+#: beatcovid/symtracker/controllers.py:37
+msgid "nausea"
+msgstr "nausea"
+
+#: beatcovid/symtracker/controllers.py:38
+msgid "neckpain"
+msgstr "Neck Pain"
+
+#: beatcovid/symtracker/controllers.py:39
+msgid "noappetite"
+msgstr "No Appetite"
+
+#: beatcovid/symtracker/controllers.py:40
+msgid "nobreath"
+msgstr "No breath"
+
+#: beatcovid/symtracker/controllers.py:41
+msgid "nosleep"
+msgstr "No sleep"
+
+#: beatcovid/symtracker/controllers.py:42
+msgid "nosmell"
+msgstr "No Smell"
+
+#: beatcovid/symtracker/controllers.py:43
+msgid "phlegm"
+msgstr "Phlegm"
+
+#: beatcovid/symtracker/controllers.py:44
+msgid "sorethroat"
+msgstr "Sore Throat"
+
+#: beatcovid/symtracker/controllers.py:45
+msgid "taste"
+msgstr "Taste"
+
+#: beatcovid/symtracker/controllers.py:46
+msgid "wheezing"
+msgstr "Wheezing"
+
+#: beatcovid/symtracker/controllers.py:102
 msgid "symtracker.risk.header"
 msgstr ""
 "<h2>Your results today based on the<br>Australian Government "
 "recommendations</h2>"
 
-#: beatcovid/symtracker/controllers.py:84
+#: beatcovid/symtracker/controllers.py:104
 msgid "symtracker.risk.footer"
 msgstr ""
 "For up-to-date information follow your national COVID-19 guidelines or look "
@@ -36,162 +104,113 @@ msgstr ""
 "diseases/novel-coronavirus-2019/advice-for-public' target='_blank'>WHO "
 "website</a>."
 
-#: beatcovid/symtracker/controllers.py:89
+#: beatcovid/symtracker/controllers.py:109
 msgid "symtracker.risk.A.content1"
-msgstr ""
-"Report: No or mild symptoms, no recent travel or exposure"
+msgstr "Report: No or mild symptoms, no recent travel or exposure"
 
-#: beatcovid/symtracker/controllers.py:90
+#: beatcovid/symtracker/controllers.py:110
 msgid "symtracker.risk.A.content2"
 msgstr ""
 "Please continue to monitor your wellbeing and complete the Tracker each day."
 
-#: beatcovid/symtracker/controllers.py:97
+#: beatcovid/symtracker/controllers.py:115
 msgid "symtracker.risk.B.content1"
 msgstr ""
-"Report: You reported that you have mild, moderate or severe symptoms and no recent travel or exposure."
+"Report: You reported that you have mild, moderate or severe symptoms and no "
+"recent travel or exposure."
 
-#: beatcovid/symtracker/controllers.py:98
+#: beatcovid/symtracker/controllers.py:116
 msgid "symtracker.risk.B.content2"
 msgstr ""
-"Please continue to monitor your symptoms and complete the Tracker each day. If you have serious symptoms such as difficulty breathing, call  your emergency line for urgent medical help. If you would like to talk to someone about your symptoms, contact your local COVID-19 Health Information Line."
-
-#: beatcovid/symtracker/controllers.py:105
-msgid "symtracker.risk.C.content1"
-msgstr ""
-"Report: You reported that you may have symptoms including shortness of breath (moderate or severe), with no recent travel or exposure."
-
-#: beatcovid/symtracker/controllers.py:106
-msgid "symtracker.risk.C.content2"
-msgstr ""
-"If you have serious symptoms such as difficulty breathing, call your emergency line for urgent medical help.  If you would like to talk to someone about your symptoms, contact your local COVID-19 Health Information Line. Please continue to monitor your symptoms and complete the Tracker each day."
-
-#: beatcovid/symtracker/controllers.py:113
-msgid "symtracker.risk.D.content1"
-msgstr ""
-"Report: You reported that you have none or mild symptoms and recent travel or exposure."
-
-#: beatcovid/symtracker/controllers.py:114
-msgid "symtracker.risk.D.content2"
-msgstr ""
-"Follow the advice about isolation and monitoring your health provided to you by your local health authority. Please, continue to monitor your symptoms and complete the Tracker each day."
+"Please continue to monitor your symptoms and complete the Tracker each day. "
+"If you have serious symptoms such as difficulty breathing, call  your "
+"emergency line for urgent medical help. If you would like to talk to someone "
+"about your symptoms, contact your local COVID-19 Health Information Line."
 
 #: beatcovid/symtracker/controllers.py:121
-msgid "symtracker.risk.E.content1"
+msgid "symtracker.risk.C.content1"
 msgstr ""
-"Report: You reported that you have moderate to severe symptoms and recent travel or exposure."
+"Report: You reported that you may have symptoms including shortness of "
+"breath (moderate or severe), with no recent travel or exposure."
 
 #: beatcovid/symtracker/controllers.py:122
-msgid "symtracker.risk.E.content2"
+msgid "symtracker.risk.C.content2"
 msgstr ""
-"Contact your local health authority and/or your medical practitioner immediately. If you have serious symptoms such as difficulty breathing, call your emergency line for urgent medical help. Please continue to monitor your symptoms and complete the Tracker each day."
+"If you have serious symptoms such as difficulty breathing, call your "
+"emergency line for urgent medical help.  If you would like to talk to "
+"someone about your symptoms, contact your local COVID-19 Health Information "
+"Line. Please continue to monitor your symptoms and complete the Tracker each "
+"day."
 
-
-#: beatcovid/symtracker/controllers.py:122
-msgid "symtracker.risk.E.content3"
+#: beatcovid/symtracker/controllers.py:127
+msgid "symtracker.risk.D.content1"
 msgstr ""
-"If you experience worsening symptoms such as difficulty breathing, please seek urgent medical help and make sure you let the health service know that you have recently returned from travel or had exposure to a confirmed or suspected case of COVID-19."
+"Report: You reported that you have none or mild symptoms and recent travel "
+"or exposure."
 
-#: beatcovid/symtracker/controllers.py:130
-msgid "symtracker.risk.F.content1"
+#: beatcovid/symtracker/controllers.py:128
+msgid "symtracker.risk.D.content2"
 msgstr ""
-"You have reported a positive COVID-19 test result or are awaiting your test results."
-
-#: beatcovid/symtracker/controllers.py:131
-#: beatcovid/symtracker/controllers.py:142
-msgid "symtracker.risk.F.content2"
-msgstr ""
-"Follow the advice about isolation and monitoring your health provided to you by your local health authority. Please, continue to monitor your symptoms and complete the Tracker each day."
-
-#: beatcovid/symtracker/controllers.py:132
-#: beatcovid/symtracker/controllers.py:143
-msgid "symtracker.risk.F.content3"
-msgstr ""
-"If you experience worsening symptoms such as difficulty breathing, please seek urgent medical help and make sure you let the health service know that you have tested positive for COVID-19."
+"Follow the advice about isolation and monitoring your health provided to you "
+"by your local health authority. Please, continue to monitor your symptoms "
+"and complete the Tracker each day."
 
 #: beatcovid/symtracker/controllers.py:133
-#: beatcovid/symtracker/controllers.py:144
-msgid "symtracker.risk.F.content4"
+msgid "symtracker.risk.E.content1"
 msgstr ""
-"For up-to-date information follow your national COVID-19 guidelines or look at ‘Advice for public’ on <a href='https://www.who.int/emergencies/diseases/novel-coronavirus-2019/advice-for-public'>the WHO website</a>"
+"Report: You reported that you have moderate to severe symptoms and recent "
+"travel or exposure."
+
+#: beatcovid/symtracker/controllers.py:134
+msgid "symtracker.risk.E.content2"
+msgstr ""
+"Contact your local health authority and/or your medical practitioner "
+"immediately. If you have serious symptoms such as difficulty breathing, call "
+"your emergency line for urgent medical help. Please continue to monitor your "
+"symptoms and complete the Tracker each day."
+
+#: beatcovid/symtracker/controllers.py:135
+msgid "symtracker.risk.E.content3"
+msgstr ""
+"If you experience worsening symptoms such as difficulty breathing, please "
+"seek urgent medical help and make sure you let the health service know that "
+"you have recently returned from travel or had exposure to a confirmed or "
+"suspected case of COVID-19."
+
+#: beatcovid/symtracker/controllers.py:140
+msgid "symtracker.risk.F.content1"
+msgstr ""
+"You have reported a positive COVID-19 test result or are awaiting your test "
+"results."
 
 #: beatcovid/symtracker/controllers.py:141
-msgid "symtracker.risk.FW.content1"
+#: beatcovid/symtracker/controllers.py:148
+msgid "symtracker.risk.F.content2"
 msgstr ""
-"You have reported you are awaiting your test results. "
+"Follow the advice about isolation and monitoring your health provided to you "
+"by your local health authority. Please, continue to monitor your symptoms "
+"and complete the Tracker each day."
+
+#: beatcovid/symtracker/controllers.py:142
+#: beatcovid/symtracker/controllers.py:149
+msgid "symtracker.risk.F.content3"
+msgstr ""
+"If you experience worsening symptoms such as difficulty breathing, please "
+"seek urgent medical help and make sure you let the health service know that "
+"you have tested positive for COVID-19."
+
+#: beatcovid/symtracker/controllers.py:143
+#: beatcovid/symtracker/controllers.py:150
+msgid "symtracker.risk.F.content4"
+msgstr ""
+"For up-to-date information follow your national COVID-19 guidelines or look "
+"at ‘Advice for public’ on <a href='https://www.who.int/emergencies/diseases/"
+"novel-coronavirus-2019/advice-for-public'>the WHO website</a>"
+
+#: beatcovid/symtracker/controllers.py:147
+msgid "symtracker.risk.FW.content1"
+msgstr "You have reported you are awaiting your test results. "
 
 #: templates/rest_framework/api.html:11
 msgid "beatcovid19 API"
 msgstr "beatcovid19now API"
-
-#~ msgid "aches"
-#~ msgstr "aches"
-
-#~ msgid "cough"
-#~ msgstr "cough"
-
-#~ msgid "diarrhoea"
-#~ msgstr "diarrhoea"
-
-#~ msgid "fatigue"
-#~ msgstr "fatigue"
-
-#~ msgid "feverish"
-#~ msgstr "feverish"
-
-#~ msgid "headache"
-#~ msgstr "headache"
-
-#~ msgid "nasal_congestion"
-#~ msgstr "Nasal Congestion"
-
-#~ msgid "nausea"
-#~ msgstr "nausea"
-
-#~ msgid "neckpain"
-#~ msgstr "Neck Pain"
-
-#~ msgid "noappetite"
-#~ msgstr "No Appetite"
-
-#~ msgid "nobreath"
-#~ msgstr "No breath"
-
-#~ msgid "nosleep"
-#~ msgstr "No sleep"
-
-#~ msgid "nosmell"
-#~ msgstr "No Smell"
-
-#~ msgid "phlegm"
-#~ msgstr "Phlegm"
-
-#~ msgid "sorethroat"
-#~ msgstr "Sore Throat"
-
-#~ msgid "taste"
-#~ msgstr "Taste"
-
-#~ msgid "wheezing"
-#~ msgstr "Wheezing"
-
-#~ msgid "activities"
-#~ msgstr "Activities"
-
-#~ msgid "bed"
-#~ msgstr "Bed"
-
-#~ msgid "home"
-#~ msgstr "Home"
-
-#~ msgid "meals"
-#~ msgstr "Meals"
-
-#~ msgid "tasks"
-#~ msgstr "Tasks"
-
-#~ msgid "selfcare"
-#~ msgstr "Self Care"
-
-#~ msgid "leaveroom"
-#~ msgstr "Leave Room"
