@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-18 20:06+0000\n"
+"POT-Creation-Date: 2020-05-19 20:07+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,11 +22,12 @@ msgstr ""
 msgid "condition.immune_system"
 msgstr "This is a test immune system string"
 
+#: beatcovid/symtracker/controllers.py:82
+msgid "symtracker.risk.header"
+msgstr ""
+"<h2>Your results today based on the<br>Australian Government "
+"recommendations</h2>"
+
 #: templates/rest_framework/api.html:11
 msgid "beatcovid19 API"
 msgstr ""
-
-#~ msgid "symtracker.risk.header"
-#~ msgstr ""
-#~ "<h2>Your results today based on the<br>Australian Government "
-#~ "recommendations</h2>"
