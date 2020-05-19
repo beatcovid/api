@@ -76,6 +76,7 @@ CORS_ALLOW_HEADERS = [
     "x-csrftoken",
     "x-requested-with",
     "x-device-id",
+    "x-locale",
     "x-uid",
 ]
 
