@@ -22,7 +22,7 @@ class Lokalise:
 
         self.session.headers.update({"x-api-token": self.token})
 
-    def keys_list(self):
+    def keys_list(self, tags="api"):
         req_url = LOKALISE_BASE_URI.format(
             **{"project_id": self.project, "endpoint": "keys"}
         )
@@ -35,7 +35,7 @@ class Lokalise:
                 "limit": 5000,
                 "include_translations": 1,
                 "filter_platforms": "web",
-                "filter_tags": "api",
+                "filter_tags": tags,
             },
         )
 
