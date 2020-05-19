@@ -1,9 +1,12 @@
 import json
+import logging
 import os
 from datetime import datetime, timedelta
 
 import redis
 from django.conf import settings
+
+logger = logging.getLogger(__name__)
 
 
 def get_redis_url():
