@@ -300,7 +300,7 @@ def get_risk_score(survey, has_travel, has_contact):
     risk_score = "A"
     risk_label = None
 
-    symptom_score = get_summary_score(survey, general_symptoms)["value"]
+    symptom_score = get_summary_score(survey, all_symptoms)["value"]
     risk_symptom_score = get_summary_score(survey, risk_symptoms)["value"]
 
     risk_symptoms_mod_or_severe = [
