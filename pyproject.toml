@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "beatcovidbackend"
-version = "1.1.4"
+version = "1.1.6"
 description = ""
 authors = ["beatcovi19now <git@beatcovid19now.org>"]
 
