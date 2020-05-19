@@ -14,3 +14,4 @@ staticfiles/
 COVID-19 Stats.ipynb
 *.sqlite3
 test-post.sh
+config.yml
