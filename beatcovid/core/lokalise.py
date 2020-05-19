@@ -33,10 +33,13 @@ class Lokalise:
 
         resp = self.session.get(
             req_url,
-            params={"limit": 5000, "include_translations": 1},
-            # headers={"X-Api-Token": self.token},
+            params={
+                "limit": 5000,
+                "include_translations": 1,
+                "filter_platforms": "web",
+                "filter_tags": "api",
+            },
         )
-        # logger.info(resp.json())
 
         if resp.status_code != 200:
             raise Exception("Error: {}".format(resp))
