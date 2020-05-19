@@ -20,4 +20,4 @@ class Command(BaseCommand):
         dry_run = options["dry_run"]
         l = Lokalise()
 
-        schema_messages(l)
+        translations = schema_messages(l)

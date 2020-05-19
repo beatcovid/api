@@ -160,6 +160,6 @@ def schema_messages(l):
     save_path = os.path.join(save_dir, "translations.json")
 
     with open(save_path, "w+") as fh:
-        json.dump(translations, fh)
+        json.dump(translations, fh, indent=4)
 
     return None
