@@ -321,6 +321,9 @@ def get_risk_score(survey, has_travel, has_contact):
     ]
     risk_symptoms_has_none_or_mild = len(risk_symptoms_none_or_mild)
 
+    if symptom_score > 0:
+        risk_score = "B"
+
     if symptom_score > 0 and not has_contact and not has_travel:
         risk_score = "B"
 
