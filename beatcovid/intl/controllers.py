@@ -1,4 +1,5 @@
 import glob
+import json
 import logging
 import os
 from pprint import pprint
@@ -129,3 +130,36 @@ def update_keys(lokalise, messages):
 
     if len(keys_to_add) > 0:
         lokalise.keys_add(keys_to_add)
+
+
+def schema_messages(l):
+    keys = l.keys_list("survey")
+
+    translations = {}
+
+    for key in keys:
+        if not "key_name" in key:
+            continue
+
+        for translation in key["translations"]:
+            iso = translation["language_iso"]
+
+            if not iso in translations:
+                translations[iso] = {}
+
+            key_name = key["key_name"]["web"]
+
+            if len(translation["translation"]) > 0 and translation["words"] > 0:
+                translations[iso][key_name] = translation["translation"]
+
+    save_dir = os.path.join(os.getcwd(), "beatcovid", "api")
+
+    if not os.path.isdir(save_dir):
+        raise Exception("Could not find path {}".format(save_dir))
+
+    save_path = os.path.join(save_dir, "translations.json")
+
+    with open(save_path, "w+") as fh:
+        json.dump(translations, fh)
+
+    return None
