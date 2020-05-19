@@ -6,6 +6,7 @@ import sys
 
 from django.utils import dateparse
 from django.utils.translation import ugettext_lazy as _
+
 from beatcovid.api.controllers import (
     get_form_schema,
     get_submission_data,
@@ -318,6 +319,9 @@ def get_risk_score(survey, has_travel, has_contact):
         if i <= 1
     ]
     risk_symptoms_has_none_or_mild = len(risk_symptoms_none_or_mild)
+
+    if symptom_score > 0:
+        risk_score = "B"
 
     if symptom_score > 0 and not has_contact and not has_travel:
         risk_score = "B"
