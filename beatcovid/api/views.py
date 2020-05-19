@@ -128,6 +128,6 @@ def FormData(request, form_name):
 def TranslationTest(request):
     result = {
         "test": _("condition.immune_system"),
-        "lang": get_language_from_request(request),
+        "lang": request.LANGUAGE_CODE,
     }
     return Response(result)
