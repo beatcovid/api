@@ -49,9 +49,9 @@ def get_user_from_request(request):
     #         )
     #     )
 
-    # u = get_respondent_from_request(request)
+    u = get_respondent_from_request(request)
     s = None
-    u = None
+    # u = None
 
     if not u:
         u = Respondent()
