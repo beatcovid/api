@@ -71,6 +71,7 @@ CORS_ALLOW_HEADERS = [
     "x-requested-with",
     "x-device-id",
     "x-uid",
+    "x-locale",
 ]
 
 CORS_ALLOW_METHODS = [

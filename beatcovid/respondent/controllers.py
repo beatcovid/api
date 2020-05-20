@@ -37,20 +37,21 @@ def get_user_from_request(request):
     if "HTTP_X_UID" in request.META:
         v1_session_key = request.META["HTTP_X_UID"]
 
-    if v1_session_key:
-        s = Session.objects.filter(cookie_id=v1_session_key).first()
+    # if v1_session_key:
+    #     s = Session.objects.filter(cookie_id=v1_session_key).first()
 
-        if s:
-            return s.respondent
+    #     if s:
+    #         return s.respondent
 
-        logger.error(
-            "Someone sent us an uid cookie but we don't have a session for them. It was {}".format(
-                v1_session_key
-            )
-        )
+    #     logger.error(
+    #         "Someone sent us an uid cookie but we don't have a session for them. It was {}".format(
+    #             v1_session_key
+    #         )
+    #     )
 
-    u = get_respondent_from_request(request)
+    # u = get_respondent_from_request(request)
     s = None
+    u = None
 
     if not u:
         u = Respondent()
