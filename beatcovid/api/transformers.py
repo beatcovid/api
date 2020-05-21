@@ -24,17 +24,7 @@ def _strip_outer_tags(s):
     return s[start:end]
 
 
-def parse_form_label(labels, language_index=0):
-    if not labels or len(labels) < 1:
-        return ""
-
-    return labels
-
-    if type(labels) is not list:
-        labels = [labels]
-
-    label = labels[language_index]
-
+def parse_form_label(label, language_index=0):
     if type(label) is list:
         label = "".join(label)
 
@@ -54,21 +44,36 @@ def parse_form_label(labels, language_index=0):
     return _output
 
 
+def get_core_language_from_locale(locale):
+    if "-" in locale:
+        return locale.split("-", 1)[0]
+    if "_" in locale:
+        return locale.split("_", 1)[0]
+    return locale
+
+
 def translate_form_label(key, locale="en"):
     if not locale in translations:
-        print("falling back to default locale since {} not found", locale)
+        logger.debug(f"Trying core locale since {locale} not found")
+        locale = get_core_language_from_locale(locale)
+
+    if not locale in translations:
+        logger.debug(f"falling back to default locale since {locale} not found")
         locale = "en"
 
     translation = translations[locale]
 
-    print(f"using translation {locale}")
+    logger.debug(f"Using locale {locale}")
 
     if not key in translation:
         if key in translations["en"]:
             return translations["en"][key]
         return key
 
-    return translation[key]
+    label_translated = translation[key]
+    label_translated_parsed = parse_form_label(label_translated)
+
+    return label_translated_parsed
 
 
 def _parse_question(si, choices, request, user_language):
