@@ -149,7 +149,7 @@ def get_form_pk_from_name(form_name):
     return server_response["formid"]
 
 
-def get_user_last_submission(form_name, user):
+def get_user_last_submission_old(form_name, user):
     if not user or not user.id:
         return None
 
@@ -168,6 +168,21 @@ def get_user_last_submission(form_name, user):
         return collections.OrderedDict(sorted(result[0].items()))
 
     return None
+
+
+def get_user_last_submission(form_name, user):
+    if not user or not user.id:
+        return None
+
+    submissions = get_user_submissions(form_name, user)
+
+    if not submissions or not type(submissions) is list:
+        return None
+
+    if len(submissions) < 1:
+        return None
+
+    return submissions[0]
 
 
 def get_user_submissions(form_name, user):
