@@ -19,8 +19,12 @@ class LocaleMiddleware(MiddlewareMixin):
         if language_qs:
             language = language_qs
 
-        if "X-LOCALE" in request.META:
-            language_header = request.META["X-LOCALE"]
+        from pprint import pprint
+
+        pprint(request.META)
+
+        if "HTTP_X_LOCALE" in request.META:
+            language_header = request.META["HTTP_X_LOCALE"]
             language = language_header
 
         # fallback to default language
