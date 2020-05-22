@@ -86,6 +86,7 @@ def get_server_form_by_name(form_name):
 
     if not "count" in r:
         logger.debug(f"No result from form server. Check auth token: {assets_url}")
+        logger.debug(r)
         return None
 
     if r["count"] < 1:
@@ -158,6 +159,7 @@ def get_form_pk_from_name(form_name):
     server_response = f.json()
 
     if not type(server_response) is list:
+        logger.debug(server_response)
         return None
 
     server_response = server_response[0]
@@ -360,7 +362,7 @@ def get_submission_data(form_name, query, limit=None, count=None, sort=None):
     form_id = get_form_pk_from_name(form_name)
 
     if not form_id:
-        logger.info(f"get_form_id_from_name got no form id for form: {form_name}")
+        logger.info(f"get_form_pk_from_name got no form id for form: {form_name}")
         return None
 
     _formserver = get_kobocat_uri()

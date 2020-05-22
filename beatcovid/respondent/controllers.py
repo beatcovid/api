@@ -29,13 +29,11 @@ def get_user_from_request(request):
     """
     session_key = request.session._get_or_create_session_key()
     v1_session_key = None
+    device_id = None
 
     # backwards compat for v1.0
     if "uid" in request.COOKIES:
         v1_session_key = request.COOKIES["uid"]
-
-    if "HTTP_X_UID" in request.META:
-        v1_session_key = request.META["HTTP_X_UID"]
 
     if v1_session_key:
         s = Session.objects.filter(cookie_id=v1_session_key).first()
@@ -48,6 +46,29 @@ def get_user_from_request(request):
                 v1_session_key
             )
         )
+
+    if "HTTP_X_UID" in request.META:
+        logger.debug(
+            "Getting uid from request header {}".format(request.META["HTTP_X_UID"])
+        )
+        device_id = request.META["HTTP_X_UID"]
+
+    if device_id:
+        s = Session.objects.filter(device_id=device_id).first()
+
+        if s:
+            return s.respondent
+
+        u = Respondent()
+        u.save()
+        request.session["user"] = str(u.id)
+        logger.debug(f"Created new user from device id {u.id}")
+        s = Session()
+        s.device_id = device_id
+        s.respondent = u
+        s.save()
+
+        return u
 
     u = get_respondent_from_request(request)
     s = None
