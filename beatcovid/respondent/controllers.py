@@ -35,7 +35,6 @@ def get_user_from_request(request):
     if "uid" in request.COOKIES:
         v1_session_key = request.COOKIES["uid"]
 
-    if v1_session_key:
         s = Session.objects.filter(cookie_id=v1_session_key).first()
 
         if s:
@@ -53,7 +52,6 @@ def get_user_from_request(request):
         )
         device_id = request.META["HTTP_X_UID"]
 
-    if device_id:
         s = Session.objects.filter(device_id=device_id).first()
 
         if s:
