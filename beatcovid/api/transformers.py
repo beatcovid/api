@@ -53,8 +53,11 @@ def get_core_language_from_locale(locale):
 
 
 def translate_form_label(key, locale="en"):
+    locale = locale.replace("-", "_")
+
     if not locale in translations:
-        # logger.debug(f"Trying core locale since {locale} not found")
+        _k = translations.keys()
+        # logger.debug(f"Trying core locale since {locale} not found in {_k}")
         locale = get_core_language_from_locale(locale)
 
     if not locale in translations:
@@ -119,6 +122,7 @@ def _parse_question(si, choices, request, user_language):
                 ),
             }
             for i in c
+            if "name" in si and "name" in i
         ]
         q["choices"] = c
 

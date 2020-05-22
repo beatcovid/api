@@ -248,7 +248,7 @@ def get_form_schema(form_name, request, user):
 
     if not r or "url" not in r:
         logger.debug(
-            f"No or bad result from form server for form {form_name}. Check auth token: {assets_url}"
+            f"No or bad result from form server for form {form_name}. Check auth token: {asset_url}"
         )
         return None
 

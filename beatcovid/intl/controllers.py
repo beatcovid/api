@@ -142,7 +142,7 @@ def schema_messages(l):
             continue
 
         for translation in key["translations"]:
-            iso = translation["language_iso"]
+            iso = translation["language_iso"].lower()
 
             if not iso in translations:
                 translations[iso] = {}
