@@ -214,7 +214,7 @@ if DB_USING not in DATABASES_AVAILABLE.keys():
 
 DATABASES = {"default": DATABASES_AVAILABLE[DB_USING]}
 
-logger.info("Using database {}".format(DB_USING))
+print("Using database {}".format(DB_USING))
 
 COUNTRIES_FIRST = ["AU", "NZ"]
 
