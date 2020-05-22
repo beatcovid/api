@@ -3,7 +3,7 @@ import logging
 from django.core.management.base import BaseCommand, CommandError
 
 from beatcovid.core.lokalise import Lokalise
-from beatcovid.intl.controllers import schema_messages
+from beatcovid.intl.controllers import schema_messages, update_survey_keys
 
 logger = logging.getLogger(__name__)
 
@@ -20,4 +20,5 @@ class Command(BaseCommand):
         dry_run = options["dry_run"]
         l = Lokalise()
 
-        translations = schema_messages(l)
+        update_survey_keys(l)
+        schema_messages(l)
