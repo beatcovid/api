@@ -170,7 +170,11 @@ def parse_kobo_json(form_json, request, user, last_submission=None):
         logger.error("did not receive a user id when transforming form")
 
     _json = form_json
-    choices = _json["content"]["choices"]
+    choices = []
+
+    if "choices" in _json["content"]:
+        choices = _json["content"]["choices"]
+
     survey = _json["content"]["survey"]
 
     user_language = request.LANGUAGE_CODE
