@@ -68,11 +68,13 @@ def translate_form_label(key, locale="en"):
 
     if not key in translation:
         if key in translations["en"]:
-            return translations["en"][key]
-        logger.debug("Could not find key {} in translations".format(key))
-        return ""
+            label_translated = translations["en"][key]
+        else:
+            logger.debug("Could not find key {} in translations".format(key))
+            return ""
+    else:
+        label_translated = translation[key]
 
-    label_translated = translation[key]
     label_translated_parsed = parse_form_label(label_translated)
 
     return label_translated_parsed
