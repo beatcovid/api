@@ -131,6 +131,12 @@ def get_form_pk_from_name(form_name):
         @param formid - kpi form id
 
     """
+    cache_key = "get_form_pk_from_name"
+    kobo_form_pk = get_cache(cache_key, form_name)
+
+    if kobo_form_pk:
+        return kobo_form_pk
+
     # @TODO switch this to using kpi rather than kobocat
 
     form_id = get_form_id_from_name(form_name)
@@ -162,9 +168,10 @@ def get_form_pk_from_name(form_name):
         logger.debug(server_response)
         return None
 
-    server_response = server_response[0]
+    kobo_form_pk = server_response[0]["formid"]
+    set_cache(cache_key, form_name, kobo_form_pk)
 
-    return server_response["formid"]
+    return kobo_form_pk
 
 
 def get_user_last_submission(form_name, user):
