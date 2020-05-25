@@ -245,28 +245,33 @@ def get_form_schema(form_name, request, user):
     asset_url = f"{_formserver}assets/{formid}"
     _headers = {"Accept": "application/json", "Authorization": f"Token {_token}"}
 
-    f = None
+    cache_key = "get_form_schema"
+    req = None
+    kobo_schema = get_cache(cache_key, form_name)
 
-    try:
-        f = requests.get(asset_url, headers=_headers)
-    except Exception as e:
-        logger.error(e)
-        return None
+    if not kobo_schema:
+        try:
+            req = requests.get(asset_url, headers=_headers)
+        except Exception as e:
+            logger.error(e)
+            return None
 
-    r = f.json()
+        kobo_schema = req.json()
 
-    if not r or "url" not in r:
-        logger.debug(
-            f"No or bad result from form server for form {form_name}. Check auth token: {asset_url}"
-        )
-        return None
+        if not kobo_schema or "url" not in kobo_schema:
+            logger.debug(
+                f"No or bad result from form server for form {form_name}. Check auth token: {asset_url}"
+            )
+            return None
+
+        set_cache(cache_key, form_name, kobo_schema)
 
     return_schema = None
 
     last_submission = get_user_last_submission(form_name, user)
 
     try:
-        return_schema = parse_kobo_json(r, request, user, last_submission)
+        return_schema = parse_kobo_json(kobo_schema, request, user, last_submission)
     except Exception as e:
         logging.exception(e)
         return None
