@@ -419,7 +419,8 @@
         "number_10_plus.9": "9",
         "languages.1": "none",
         "medication_frequency.every_day": "Every day",
-        "medication_frequency.when_needed": "Only when needed"
+        "medication_frequency.when_needed": "Only when needed",
+        "yes_no_dk.refuse_3": "Refuse to answer"
     },
     "de": {
         "__disclaimer": ":warning: Dieser Symptom-Tracker sammelt Informationen zu Forschungszwecken. Die Ergebnisse sind nur allgemein gehalten und ersetzen keinen medizinischen Rat. Wenn Sie besorgt sind, schlie\u00dfen Sie den Symptom-Tracker und wenden Sie sich an Ihre \u00f6rtliche Gesundheitsbeh\u00f6rde oder Ihren Arzt. Bitte suchen Sie dringend medizinische Hilfe, wenn Sie Atembeschwerden haben.",
