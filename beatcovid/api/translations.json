@@ -420,7 +420,12 @@
         "languages.1": "none",
         "medication_frequency.every_day": "Every day",
         "medication_frequency.when_needed": "Only when needed",
-        "yes_no_dk.refuse_3": "Refuse to answer"
+        "yes_no_dk.refuse_3": "Refuse to answer",
+        "travel_time": "When did you return to the country you are in now",
+        "travel_time.week_1": "1 week ago",
+        "travel_time.week_2": "2 weeks ago",
+        "travel_time.week_3": "3 weeks ago",
+        "travel_time.week_4": "4 or more weeks ago"
     },
     "de": {
         "__disclaimer": ":warning: Dieser Symptom-Tracker sammelt Informationen zu Forschungszwecken. Die Ergebnisse sind nur allgemein gehalten und ersetzen keinen medizinischen Rat. Wenn Sie besorgt sind, schlie\u00dfen Sie den Symptom-Tracker und wenden Sie sich an Ihre \u00f6rtliche Gesundheitsbeh\u00f6rde oder Ihren Arzt. Bitte suchen Sie dringend medizinische Hilfe, wenn Sie Atembeschwerden haben.",
