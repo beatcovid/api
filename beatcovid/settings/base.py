@@ -145,21 +145,13 @@ TEMPLATES = [
 WSGI_APPLICATION = "beatcovid.wsgi.application"
 
 # Kobo setup
-KOBO_FORM_SERVER = env(
-    "KOBO_FORM_SERVER", default="https://kobo.stopcovid.infotorch.org/"
-)
+KOBO_FORM_SERVER = env("KOBO_FORM_SERVER", default=None)
 
-# @TODO replace with restricted permission tokens
-KOBO_FORM_TOKEN = env(
-    "KOBO_FORM_TOKEN", default="867efc167553ff10d9a80beb988dfed9a282d07f"
-)
+KOBO_FORM_TOKEN = env("KOBO_FORM_TOKEN", default=None)
 
-KOBOCAT_API = env("KOBOCAT_API", default="https://kc.stopcovid.infotorch.org/")
+KOBOCAT_API = env("KOBOCAT_API", default=None)
 
-# @TODO replace with restricted permission tokens
-KOBOCAT_CREDENTIALS = env(
-    "KOBOCAT_CREDENTIALS", default="c3VwZXJfYWRtaW46WkxOJEM3WTh6WA=="
-)
+KOBOCAT_CREDENTIALS = env("KOBOCAT_CREDENTIALS", default=None)
 
 SUBMISSION_COUNT_BASE = env("SUBMISSION_COUNT_BASE", default=18624)
 
