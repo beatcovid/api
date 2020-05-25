@@ -222,7 +222,8 @@ def parse_kobo_json(form_json, request, user, last_submission=None):
             step = {"name": si["name"], "questions": []}
             if "label" in si:
                 step["label"] = translate_form_label(si["name"], user_language)
-            # q = {}
+            if "relevant" in si:
+                step["relevant"] = si["relevant"]
             in_step = True
         elif si["type"] == "end_group" and in_step:
             steps.append(step)
