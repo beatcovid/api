@@ -426,7 +426,8 @@
         "travel_time.week_2": "2 weeks ago",
         "travel_time.week_3": "3 weeks ago",
         "travel_time.week_4": "4 or more weeks ago",
-        "__food_header_intro": "Given you said you were worried about food, please answer the following."
+        "__food_header_intro": "Given you said you were worried about food, please answer the following.",
+        "__medicine_header": "Given you said you were worried about your medicines, please answer the following."
     },
     "de": {
         "__disclaimer": ":warning: Dieser Symptom-Tracker sammelt Informationen zu Forschungszwecken. Die Ergebnisse sind nur allgemein gehalten und ersetzen keinen medizinischen Rat. Wenn Sie besorgt sind, schlie\u00dfen Sie den Symptom-Tracker und wenden Sie sich an Ihre \u00f6rtliche Gesundheitsbeh\u00f6rde oder Ihren Arzt. Bitte suchen Sie dringend medizinische Hilfe, wenn Sie Atembeschwerden haben.",
