@@ -170,8 +170,8 @@ def is_single_number(value):
 
 def cast_value_strings(tag):
     """ strips those _0 numbers from the end of values"""
-    if type(tag) is dict:
-        logger.debug(tag)
+    # if type(tag) is dict:
+    # logger.debug(tag)
 
     if type(tag) is str and "_" in tag:
         value, suffix = tag.split("_", 1)
