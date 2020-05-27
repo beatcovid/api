@@ -29,7 +29,6 @@ HEALTH_TRIGGERS = [
 translations = [
     _("aches"),
     _("cough"),
-    _("diarrhoea"),
     _("fatigue"),
     _("feverish"),
     _("headache"),
@@ -49,7 +48,6 @@ translations = [
 all_symptoms = [
     "aches",
     "cough",
-    "diarrhoea",
     "fatigue",
     "feverish",
     "headache",
