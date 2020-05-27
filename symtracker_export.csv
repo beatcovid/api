@@ -1,0 +1,10 @@
+symptom_aches,symptom_cough,symptom_fatigue,symptom_feverish,symptom_headache,symptom_nasal_congestion,symptom_nausea,symptom_neckpain,symptom_noappetite,symptom_nobreath,symptom_nosleep,symptom_nosmell,symptom_phlegm,symptom_sorethroat,symptom_taste,symptom_wheezing,score_racvitity,score_rgeneral,score_rrespiratory,score_risk
+none_0,0,0,0,moderate_2,none_0,none_0,none_0,none_0,0,none_0,none_0,none_0,0,none_0,none_0,1.0,0.3,0.0,D
+none_0,0,0,0,moderate_2,none_0,none_0,none_0,none_0,0,none_0,none_0,none_0,0,none_0,none_0,1.0,0.3,0.0,D
+none_0,0,0,0,moderate_2,none_0,none_0,none_0,none_0,0,none_0,none_0,none_0,0,none_0,none_0,1.0,0.3,0.0,D
+none_0,1,1,1,moderate_2,none_0,none_0,none_0,none_0,1,none_0,none_0,none_0,1,none_0,none_0,1.0,0.6,0.5,D
+none_0,1,1,1,moderate_2,none_0,none_0,none_0,none_0,1,none_0,none_0,none_0,1,none_0,none_0,1.0,0.6,0.5,D
+none_0,1,1,1,moderate_2,none_0,none_0,none_0,none_0,1,none_0,none_0,none_0,1,none_0,none_0,1.0,0.6,0.5,D
+none_0,2,2,2,moderate_2,none_0,none_0,none_0,none_0,2,none_0,none_0,none_0,2,none_0,none_0,1.0,0.9,1.0,E
+none_0,2,2,2,moderate_2,none_0,none_0,none_0,none_0,2,none_0,none_0,none_0,2,none_0,none_0,1.0,0.9,1.0,E
+none_0,2,2,2,moderate_2,none_0,none_0,none_0,none_0,2,none_0,none_0,none_0,2,none_0,none_0,1.0,0.9,1.0,E
