@@ -1,6 +1,7 @@
 import csv
 import json
 import os
+from collections import OrderedDict
 from pprint import pprint
 
 from .controllers import (
@@ -14,44 +15,67 @@ from .tests import get_fixture
 
 CSV_PATH = os.path.join(os.getcwd(), "symtracker_export.csv")
 
+SYMPTOM_SCORES = ["none_0", "some_1", "moderate_2", "severe_3"]
+RISK_SYMPTOM_SCORES = ["none_0", "some_1", "moderate_2", "severe_3"]
+
 
 def export_test():
     f = get_fixture("submission_single")
 
     entries = []
 
-    for i in range(0, 3):
-        for x in range(0, 3):
-            for s in risk_symptoms:
-                f["symptom_" + s] = i
+    for symptom_score in SYMPTOM_SCORES:
+        for risk_symptom_score in RISK_SYMPTOM_SCORES:
+            for travel in ["yes", "no"]:
+                result = {}
 
-            for s in non_risk_symptoms:
-                f["symptoms_" + s] = x
+                for s in risk_symptoms:
+                    f["symptom_" + s] = risk_symptom_score
 
-            r = get_user_report_from_survey([f])
+                for si in non_risk_symptoms:
+                    f["symptom_" + si] = symptom_score
 
-            result = {}
+                result["travel"] = f["travel"] = travel
 
-            for s in all_symptoms:
-                result["symptom_" + s] = f["symptom_" + s]
+                r = get_user_report_from_survey([f])
 
-            scores = r["scores"][0]
+                for s in all_symptoms:
+                    result["symptom_" + s] = f["symptom_" + s]
 
-            result = {
-                **result,
-                **{
-                    "score_racvitity": scores["summary"]["activity"]["value"],
-                    "score_rgeneral": scores["summary"]["general"]["value"],
-                    "score_rrespiratory": scores["summary"]["respiratory"]["value"],
-                    "score_risk": r["scores"][0]["risk"]["score"],
-                },
-            }
+                scores = r["scores"][0]
 
-            # pprint(result)
-            entries.append(result)
+                result = {
+                    **result,
+                    **{
+                        "score_acvitity": scores["summary"]["activity"]["value"],
+                        "score_general": scores["summary"]["general"]["value"],
+                        "score_respiratory": scores["summary"]["respiratory"]["value"],
+                        "score_risk": r["scores"][0]["risk"]["score"],
+                    },
+                }
+
+                # pprint(result)
+                entries.append(OrderedDict(result))
 
     with open(CSV_PATH, "w", newline="") as fh:
-        fieldnames = entries[0].keys()
+        # fieldnames = entries[0].keys()
+        non_risk_symptoms_fieldnames = ["symptom_" + i for i in non_risk_symptoms]
+        risk_symptoms_fieldnames = ["symptom_" + i for i in risk_symptoms]
+        other_fields = ["travel"]
+        result_field_names = [
+            "score_acvitity",
+            "score_general",
+            "score_respiratory",
+            "score_risk",
+        ]
+
+        fieldnames = (
+            non_risk_symptoms_fieldnames
+            + risk_symptoms_fieldnames
+            + other_fields
+            + result_field_names
+        )
+
         writer = csv.DictWriter(fh, fieldnames=fieldnames)
 
         writer.writeheader()
