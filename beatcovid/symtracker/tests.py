@@ -5,10 +5,7 @@ from pprint import pprint
 
 from django.test import TestCase
 
-from beatcovid.symtracker.controllers import (
-    cast_bool_strings,
-    get_user_report_from_survey,
-)
+from beatcovid.symtracker.controllers import get_user_report_from_survey
 
 BASE_PATH = os.path.join(os.path.dirname(__file__), "fixtures")
 
