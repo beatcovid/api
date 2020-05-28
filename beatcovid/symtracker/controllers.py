@@ -370,7 +370,7 @@ def get_risk_score(survey, has_travel, has_contact):
     else:
         logger.error("Could not find risk labels for {}".format(risk_label))
 
-    return {"score": risk_score, "label": risk_labels_out}
+    return {"score": risk_score, "score_label": risk_label, "label": risk_labels_out}
 
 
 def pick_field(field_name, surveys):
