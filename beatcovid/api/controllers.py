@@ -354,14 +354,31 @@ def submit_form(form_name, form_data, user, request):
 
 
 def get_survey_user_count(form_name="beatcovid19now"):
-    q = get_submission_data(form_name, query={}, count=1)
+    """
+        Query the document database and return a total user record count for a form name.
+        This will cache using the standard caching wrappers to redis
 
+        @param form_name - the name of the form, defaults to "beatcovid19now"
+
+    """
+    cache_key = "get_survey_user_count"
     respondent_count_base = get_respondent_count_base()
 
-    if q and type(q) is dict and "count" in q:
-        return int(q["count"]) + respondent_count_base
+    survey_user_count = get_cache(cache_key, form_name)
 
-    return 0 + respondent_count_base
+    if survey_user_count is not None:
+        return respondent_count_base + respondent_count_base
+
+    q = get_submission_data(form_name, query={}, count=1)
+
+    if q and type(q) is dict and "count" in q:
+        survey_user_count = int(q["count"])
+    else:
+        survey_user_count = 0
+
+    set_cache(cache_key, form_name, survey_user_count)
+
+    return survey_user_count + respondent_count_base
 
 
 def get_submission_data(form_name, query, limit=None, count=None, sort=None):
