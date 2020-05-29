@@ -487,6 +487,7 @@ def get_stats(form_name):
 
     _filter_total_subs = {}
 
+    respondent_count_base = get_respondent_count_base()
     submission_count_base = get_submission_count_base()
     submission_count = db.find(_filter_total_subs).count()
     respondents = len(db.distinct("user_id"))
@@ -494,11 +495,10 @@ def get_stats(form_name):
     beatcovid_response = {
         "form": form_name,
         # "submissions_today": server_response["submission_count_for_today"],
-        "submissions_raw": submission_count_base + submission_count,
-        "submissions": submission_count,
-        "respondents": respondents,
-        # "submission_last": server_response["last_submission_time"],
-        # "date_modified": server_response["date_modified"],
+        "submissions_raw": submission_count,
+        "submissions": submission_count_base + submission_count,
+        "respondents_raw": respondents,
+        "respondents": respondent_count_base + respondents,
     }
 
     return beatcovid_response
