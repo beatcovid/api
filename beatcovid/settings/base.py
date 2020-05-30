@@ -158,6 +158,8 @@ SUBMISSION_COUNT_BASE = env("SUBMISSION_COUNT_BASE", default=0)
 
 RESPONDENT_COUNT_BASE = env("RESPONDENT_COUNT_BASE", default=0)
 
+# HTTP connection settings
+HTTP_CONNECTION_POOLING = env("HTTP_CONNECTION_POOLING", default=False)
 
 # auth methods
 REST_FRAMEWORK = {

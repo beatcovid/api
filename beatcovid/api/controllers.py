@@ -6,10 +6,10 @@ import uuid
 from datetime import datetime
 
 import redis
-import requests as requestslib
 from django.conf import settings
 from django.utils.translation import get_language_from_request
 
+from beatcovid.core import http
 from beatcovid.core.cache import get_cache, set_cache
 from beatcovid.core.mongo import get_mongo_db
 
@@ -17,7 +17,6 @@ from .transformers import parse_kobo_json
 from .utils import get_user_agent
 
 logger = logging.getLogger(__name__)
-requests = requestslib.Session()
 
 
 def get_formserver_uri():
@@ -81,7 +80,7 @@ def get_server_form_by_name(form_name):
     _headers = {"Accept": "application/json", "Authorization": f"Token {_token}"}
 
     # @TODO breakout requests objects to module and cache
-    f = requests.get(assets_url, headers=_headers)
+    f = http.get(assets_url, headers=_headers)
     r = f.json()
 
     if not "count" in r:
@@ -156,7 +155,7 @@ def get_form_pk_from_name(form_name):
     f = None
 
     try:
-        f = requests.get(data_endpoint, params=request_paramaters, headers=_headers)
+        f = http.get(data_endpoint, params=request_paramaters, headers=_headers)
     except Exception as e:
         logger.error(e)
         return None
@@ -251,7 +250,7 @@ def get_form_schema(form_name, request, user):
 
     if not kobo_schema:
         try:
-            req = requests.get(asset_url, headers=_headers)
+            req = http.get(asset_url, headers=_headers)
         except Exception as e:
             logger.error(e)
             return None
@@ -343,7 +342,7 @@ def submit_form(form_name, form_data, user, request):
         _submit_form_data["user_agent"] = get_user_agent(request)
 
     try:
-        f = requests.post(submission_endpoint, json=submission_parcel, headers=_headers)
+        f = http.post(submission_endpoint, json=submission_parcel, headers=_headers)
     except Exception as e:
         logger.error(e)
         return None
@@ -423,7 +422,7 @@ def get_submission_data(form_name, query, limit=None, count=None, sort=None):
     logger.debug("get_data query: %s %s", data_endpoint, payload_str)
 
     try:
-        f = requests.get(f"{data_endpoint}?{payload_str}", headers=_headers)
+        f = http.get(f"{data_endpoint}?{payload_str}", headers=_headers)
     except Exception as e:
         logger.error(e)
         return None
@@ -531,7 +530,7 @@ def get_submission_stats(form_name):
     f = None
 
     try:
-        f = requests.get(data_endpoint, params=request_paramaters, headers=_headers)
+        f = http.get(data_endpoint, params=request_paramaters, headers=_headers)
     except Exception as e:
         logger.error(e)
         return None
