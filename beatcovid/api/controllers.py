@@ -148,7 +148,11 @@ def get_form_pk_from_name(form_name):
     _token = get_kobocat_token()
 
     data_endpoint = f"{_formserver}api/v1/forms"
-    _headers = {"Accept": "application/json", "X-Forwarded-Proto": "http", "Authorization": f"Basic {_token}"}
+    _headers = {
+        "Accept": "application/json",
+        "X-Forwarded-Proto": "https",
+        "Authorization": f"Basic {_token}",
+    }
 
     request_paramaters = {"id_string": form_id}
 
@@ -301,7 +305,11 @@ def submit_form(form_name, form_data, user, request):
     _token = get_kobocat_token()
 
     submission_endpoint = f"{_formserver}api/v1/submissions"
-    _headers = {"Accept": "application/json", "X-Forwarded-Proto": "http", "Authorization": f"Basic {_token}"}
+    _headers = {
+        "Accept": "application/json",
+        "X-Forwarded-Proto": "https",
+        "Authorization": f"Basic {_token}",
+    }
     _uuid = uuid.uuid4()
 
     f = None
@@ -397,7 +405,11 @@ def get_submission_data(form_name, query, limit=None, count=None, sort=None):
     _token = get_kobocat_token()
 
     data_endpoint = f"{_formserver}api/v1/data/{form_id}"
-    _headers = {"Accept": "application/json", "X-Forwarded-Proto": "http", "Authorization": f"Basic {_token}"}
+    _headers = {
+        "Accept": "application/json",
+        "X-Forwarded-Proto": "https",
+        "Authorization": f"Basic {_token}",
+    }
 
     f = None
 
@@ -523,7 +535,11 @@ def get_submission_stats(form_name):
     _token = get_kobocat_token()
 
     data_endpoint = f"{_formserver}api/v1/forms"
-    _headers = {"Accept": "application/json", "X-Forwarded-Proto": "http", "Authorization": f"Basic {_token}"}
+    _headers = {
+        "Accept": "application/json",
+        "X-Forwarded-Proto": "https",
+        "Authorization": f"Basic {_token}",
+    }
 
     request_paramaters = {"id_string": form_id}
 
